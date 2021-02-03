@@ -23,6 +23,10 @@ class Goodsmile(Website):
         product_url = cls.product_url_template % id_
         try:
             soup = cls.get_soup(product_url)
+            item_photos = soup.find('div', class_='itemPhotos')
+            if item_photos is None:
+                print('[ERROR] Product ID %s does not exists.' % id_)
+                return
             a_tags = soup.find('div', class_='itemPhotos').find_all('a', class_='imagebox')
             for i in range(len(a_tags)):
                 if a_tags[i] and a_tags[i].has_attr('href'):

@@ -1,4 +1,6 @@
 from figure_scraper.website import Website
+
+from figure_scraper.aniplexplus import AniplexPlus
 from figure_scraper.fnex import Fnex
 from figure_scraper.goodsmile import Goodsmile
 from figure_scraper.kotobukiya import Kotobukiya

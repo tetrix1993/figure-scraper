@@ -37,6 +37,8 @@ class WaveCorporation(Website):
     def download_by_product_id(cls):
         print('[INFO] Product Page URL is in the format: %s' % cls.product_page_pattern)
         product_id = input('Enter product ID: ').strip()
+        if len(product_id) == 0:
+            return
         product_url = cls.product_page_prefix + product_id
         try:
             soup = cls.get_soup(product_url)
@@ -49,6 +51,9 @@ class WaveCorporation(Website):
                         image_url = a_tag['href']
                         image_name = constants.FOLDER_WAVE_IMAGES + ('/%s_%s.jpg' % (product_id, str(i + 1).zfill(2)))
                         cls.download_image(image_url, image_name, print_error_message=False)
+            else:
+                print('[ERROR] Product ID %s does not exists.' % product_id)
+                return
         except:
             print('[ERROR] Error in processing %s' % product_url)
 
@@ -56,7 +61,12 @@ class WaveCorporation(Website):
     def guess_url(cls):
         print('Image URL is in the format %s' % cls.image_url_pattern)
         year = input('Enter year: ')
-        month = input('Enter month (e.g. 1 for January, 12 for December): ').zfill(2)
+        if len(year) == 0:
+            return
+        month = input('Enter month (e.g. 1 for January, 12 for December): ')
+        if len(month) == 0:
+            return
+        month = month.zfill(2)
         for i in range(99):
             for j in range(99):
                 if j == 0:

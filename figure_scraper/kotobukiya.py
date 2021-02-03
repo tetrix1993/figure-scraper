@@ -25,6 +25,9 @@ class Kotobukiya(Website):
         try:
             soup = cls.get_soup(product_url)
             lis = soup.find_all('li', class_='slideshow-item')
+            if len(lis) == 0:
+                print('[ERROR] Product ID %s does not exists.' % id_)
+                return
             for i in range(len(lis)):
                 a_tag = lis[i].find('a')
                 if a_tag and a_tag.has_attr('href'):
