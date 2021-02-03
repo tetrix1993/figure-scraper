@@ -9,6 +9,7 @@ The following packages are required:
 ## Websites
 The scraper scrapes the following websites:
 * [F:Nex](https://fnex.jp/)
+* [Kotobukiya](https://www.kotobukiya.co.jp/)
 * [Union Creative](https://union-creative.jp/)
 * [Wave Corporation](https://www.hobby-wave.com/)
 

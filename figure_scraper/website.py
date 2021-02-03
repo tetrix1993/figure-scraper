@@ -1,4 +1,5 @@
 import os
+import re
 import requests
 import figure_scraper.constants as constants
 from bs4 import BeautifulSoup as bs
@@ -101,3 +102,13 @@ class Website:
         timenow = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
         with open(constants.DOWNLOAD_LOG_FILE, 'a+', encoding='utf-8') as f:
             f.write('%s\t%s\t%s\n' % (timenow, filepath, url))
+
+    @staticmethod
+    def clear_resize_in_url(url):
+        # Change url in the form http://abc.com/image_name-800x600.jpg to http://abc.com/image-name.jpg
+        regex = '(-[0-9]+x[0-9]+.)([A-Za-z]+)$'
+        result = re.compile(regex).findall(url)
+        if len(result) > 0 and len(result[0]) == 2:
+            return url[0:len(url) - len(result[0][0]) - len(result[0][1])] + '.' + result[0][1]
+        else:
+            return url
