@@ -2,9 +2,9 @@ from figure_scraper import *
 
 
 def run():
-    print('Figure Scraper')
-    websites = FigureWebsite.__subclasses__()
+    websites = Website.__subclasses__()
     while True:
+        print('[INFO] Figure Scraper')
         print('[INFO] Select a website to scrape: ')
         number_max_len = len(str(len(websites)))
         for i in range(len(websites)):
@@ -14,14 +14,22 @@ def run():
                 for j in range(number_max_len - len(number_str)):
                     number_str = ' ' + number_str
             print('%s: %s' % (number_str, websites[i].title))
+
+        zero_str = '0'
+        for i in range(number_max_len - 1):
+            zero_str = ' ' + zero_str
+        print('%s: Exit' % zero_str)
+
         try:
             choice = int(input('Enter choice: '))
         except:
             print('[ERROR] Invalid choice.')
             continue
 
-        if choice <= 0 or choice > len(websites):
+        if choice == 0:
             break
+        elif choice < 0 or choice > len(websites):
+            print('[ERROR] Invalid choice.')
         else:
             try:
                 print('[INFO] %s selected.' % websites[choice - 1].title)

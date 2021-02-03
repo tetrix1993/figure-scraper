@@ -1,9 +1,10 @@
-from figure_scraper.figure_website import FigureWebsite
+from figure_scraper.website import Website
+import figure_scraper.constants as constants
 
 
-class UnionCreative(FigureWebsite):
-    base_folder = 'download/union-creative'
-    title = 'Union Creative'
+class UnionCreative(Website):
+    base_folder = constants.FOLDER_UNION_CREATIVE
+    title = constants.WEBSITE_TITLE_UNION_CREATIVE
 
     image_name_template = '%s.jpg'
     image_url_template = 'https://union-creative.jp/photo/item/%s/' + image_name_template

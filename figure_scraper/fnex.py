@@ -1,9 +1,10 @@
-from figure_scraper.figure_website import FigureWebsite
+from figure_scraper.website import Website
+import figure_scraper.constants as constants
 
 
-class Fnex(FigureWebsite):
-    base_folder = 'download/fnex'
-    title = 'F:Nex'
+class Fnex(Website):
+    base_folder = constants.FOLDER_FNEX
+    title = constants.WEBSITE_TITLE_FNEX
 
     image_name_template = 'fnx%s_%s.jpg'
     image_url_template = 'https://df73htivstjso.cloudfront.net/upload/save_image/' + image_name_template

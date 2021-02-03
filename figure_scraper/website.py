@@ -5,9 +5,9 @@ from bs4 import BeautifulSoup as bs
 from datetime import datetime
 
 
-class FigureWebsite:
+class Website:
     base_folder = constants.FOLDER_BASE
-    title = 'Figure Website'
+    title = constants.WEBSITE_TITLE_BASE
 
     @classmethod
     def init(cls):
