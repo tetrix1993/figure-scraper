@@ -12,6 +12,7 @@ The scraper scrapes the following websites:
 * [F:Nex](https://fnex.jp/)
 * [Goodsmile Company](https://www.goodsmile.info/)
 * [Kotobukiya](https://www.kotobukiya.co.jp/)
+* [Medicos Entertainment](https://medicos-e-shop.net/)
 * [Union Creative](https://union-creative.jp/)
 * [Wave Corporation](https://www.hobby-wave.com/)
 
