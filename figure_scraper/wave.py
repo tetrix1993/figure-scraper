@@ -36,26 +36,30 @@ class WaveCorporation(Website):
     @classmethod
     def download_by_product_id(cls):
         print('[INFO] Product Page URL is in the format: %s' % cls.product_page_pattern)
-        product_id = input('Enter product ID: ').strip()
-        if len(product_id) == 0:
+        product_id_str = input('Enter product IDs (if multiple, separated by comma ","): ').strip()
+        if len(product_id_str) == 0:
             return
-        product_url = cls.product_page_prefix + product_id
-        try:
-            soup = cls.get_soup(product_url)
-            ul = soup.find('ul', class_='slides')
-            if ul:
-                lis = ul.find_all('li')
-                for i in range(len(lis)):
-                    a_tag = lis[i].find('a')
-                    if a_tag and a_tag.has_attr('href'):
-                        image_url = a_tag['href']
-                        image_name = constants.SUBFOLDER_WAVE_IMAGES + ('/%s_%s.jpg' % (product_id, str(i + 1).zfill(2)))
-                        cls.download_image(image_url, image_name, print_error_message=False)
-            else:
-                print('[ERROR] Product ID %s does not exists.' % product_id)
-                return
-        except:
-            print('[ERROR] Error in processing %s' % product_url)
+        product_ids = product_id_str.split(',')
+        for product_id in product_ids:
+            if len(product_id) == 0:
+                continue
+            product_url = cls.product_page_prefix + product_id
+            try:
+                soup = cls.get_soup(product_url)
+                ul = soup.find('ul', class_='slides')
+                if ul:
+                    lis = ul.find_all('li')
+                    for i in range(len(lis)):
+                        a_tag = lis[i].find('a')
+                        if a_tag and a_tag.has_attr('href'):
+                            image_url = a_tag['href']
+                            image_name = constants.SUBFOLDER_WAVE_IMAGES + ('/%s_%s.jpg' % (product_id, str(i + 1).zfill(2)))
+                            cls.download_image(image_url, image_name, print_error_message=False)
+                else:
+                    print('[ERROR] Product ID %s does not exists.' % product_id)
+                    continue
+            except:
+                print('[ERROR] Error in processing %s' % product_url)
 
     @classmethod
     def guess_url(cls):
