@@ -12,14 +12,15 @@ class Fnex(Website):
     @classmethod
     def run(cls):
         cls.init()
+        print('[INFO] %s Scraper' % cls.title)
         expr = input('Enter expression (Image IDs): ')
         numbers = cls.get_numbers_from_expression(expr)
         for number in numbers:
-            id = str(number).zfill(3)
+            id_ = str(number).zfill(3)
             for i in range(99):
                 num = str(i + 1).zfill(2)
-                image_url = cls.image_url_template % (id, num)
-                image_name = cls.image_name_template % (id, num)
+                image_url = cls.image_url_template % (id_, num)
+                image_name = cls.image_name_template % (id_, num)
                 result = cls.download_image(image_url, image_name, print_error_message=False)
                 if result == -1:
                     break

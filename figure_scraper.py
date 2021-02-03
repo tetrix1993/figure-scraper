@@ -32,7 +32,7 @@ def run():
             print('[ERROR] Invalid choice.')
         else:
             try:
-                print('[INFO] %s selected.' % websites[choice - 1].title)
+                # print('[INFO] %s selected.' % websites[choice - 1].title)
                 websites[choice - 1].run()
             except Exception as e:
                 print('[ERROR] Error in executing website')
