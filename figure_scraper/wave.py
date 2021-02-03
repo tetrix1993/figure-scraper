@@ -49,7 +49,7 @@ class WaveCorporation(Website):
                     a_tag = lis[i].find('a')
                     if a_tag and a_tag.has_attr('href'):
                         image_url = a_tag['href']
-                        image_name = constants.FOLDER_WAVE_IMAGES + ('/%s_%s.jpg' % (product_id, str(i + 1).zfill(2)))
+                        image_name = constants.SUBFOLDER_WAVE_IMAGES + ('/%s_%s.jpg' % (product_id, str(i + 1).zfill(2)))
                         cls.download_image(image_url, image_name, print_error_message=False)
             else:
                 print('[ERROR] Product ID %s does not exists.' % product_id)
@@ -74,7 +74,7 @@ class WaveCorporation(Website):
                 else:
                     image_num = str(i + 1).zfill(2) + '-' + str(j)
                 image_url = cls.image_url_template % (year, month, image_num)
-                image_name = constants.FOLDER_WAVE_GUESS + ('/%s/%s/%s.jpg' % (year, month, image_num))
+                image_name = constants.SUBFOLDER_WAVE_GUESS + ('/%s/%s/%s.jpg' % (year, month, image_num))
                 result = cls.download_image(image_url, image_name, print_error_message=False)
                 if result == -1:
                     if j == 0:
