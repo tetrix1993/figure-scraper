@@ -8,6 +8,7 @@ The following packages are required:
 
 ## Websites
 The scraper scrapes the following websites:
+* [Animaru](https://animaru.jp/)
 * [Aniplex+](https://www.aniplexplus.com/)
 * [F:Nex](https://fnex.jp/)
 * [Goodsmile Company](https://www.goodsmile.info/)
