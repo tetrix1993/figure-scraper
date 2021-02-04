@@ -11,6 +11,7 @@ The scraper scrapes the following websites:
 * [Aniplex+](https://www.aniplexplus.com/)
 * [F:Nex](https://fnex.jp/)
 * [Goodsmile Company](https://www.goodsmile.info/)
+* [Hobby Stock](http://www.hobbystock.jp/)
 * [Kotobukiya](https://www.kotobukiya.co.jp/)
 * [Medicos Entertainment](https://medicos-e-shop.net/)
 * [Union Creative](https://union-creative.jp/)
