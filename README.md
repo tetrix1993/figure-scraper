@@ -10,6 +10,7 @@ The following packages are required:
 The scraper scrapes the following websites:
 * [Animaru](https://animaru.jp/)
 * [Aniplex+](https://www.aniplexplus.com/)
+* [Bell House](https://bellhouse-shop.com/)
 * [F:Nex](https://fnex.jp/)
 * [Goodsmile Company](https://www.goodsmile.info/)
 * [Hobby Stock](http://www.hobbystock.jp/)
