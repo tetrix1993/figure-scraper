@@ -5,6 +5,7 @@ import figure_scraper.constants as constants
 class Animaru(Website):
     base_folder = constants.FOLDER_ANIMARU
     title = constants.WEBSITE_TITLE_ANIMARU
+    keywords = ['https://animaru.jp']
 
     product_page_prefix = 'https://animaru.jp'
     product_url_template = product_page_prefix + '/anmr/product/%s'

@@ -5,6 +5,7 @@ import figure_scraper.constants as constants
 class HobbyStock(Website):
     base_folder = constants.FOLDER_HOBBYSTOCK
     title = constants.WEBSITE_TITLE_HOBBYSTOCK
+    keywords = ["http://www.hobbystock.jp/"]
 
     product_url_template = 'http://www.hobbystock.jp/item/view/%s'
 

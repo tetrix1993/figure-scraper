@@ -5,6 +5,7 @@ import figure_scraper.constants as constants
 class WaveCorporation(Website):
     base_folder = constants.FOLDER_WAVE
     title = constants.WEBSITE_TITLE_WAVE
+    keywords = ["https://www.hobby-wave.com/", "Hobby"]
 
     image_url_template_prefix = 'https://www.hobby-wave.com/wp-content/uploads/'
     image_url_template = image_url_template_prefix + '%s/%s/%s.jpg'

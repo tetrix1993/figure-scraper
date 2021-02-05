@@ -5,6 +5,7 @@ import figure_scraper.constants as constants
 class Medicos(Website):
     base_folder = constants.FOLDER_MEDICOS
     title = constants.WEBSITE_TITLE_MEDICOS
+    keywords = ["https://medicos-e-shop.net"]
 
     product_url_prefix = 'https://medicos-e-shop.net'
     product_url_template = product_url_prefix + '/products/detail/%s'

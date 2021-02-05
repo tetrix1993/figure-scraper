@@ -5,6 +5,7 @@ import figure_scraper.constants as constants
 class Kotobukiya(Website):
     base_folder = constants.FOLDER_KOTOBUKIYA
     title = constants.WEBSITE_TITLE_KOTOBUKIYA
+    keywords = ["https://www.kotobukiya.co.jp"]
 
     page_prefix = 'https://www.kotobukiya.co.jp'
     product_url_template = page_prefix + '/product/product-%s/'

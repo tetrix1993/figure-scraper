@@ -5,6 +5,7 @@ import figure_scraper.constants as constants
 class Fnex(Website):
     base_folder = constants.FOLDER_FNEX
     title = constants.WEBSITE_TITLE_FNEX
+    keywords = ["https://fnex.jp/"]
 
     image_name_template = 'fnx%s_%s.jpg'
     image_url_template = 'https://df73htivstjso.cloudfront.net/upload/save_image/' + image_name_template

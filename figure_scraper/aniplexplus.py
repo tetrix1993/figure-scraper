@@ -5,6 +5,7 @@ import figure_scraper.constants as constants
 class AniplexPlus(Website):
     base_folder = constants.FOLDER_ANIPLEXPLUS
     title = constants.WEBSITE_TITLE_ANIPLEXPLUS
+    keywords = ['https://www.aniplexplus.com']
 
     product_url_prefix = 'https://www.aniplexplus.com'
     product_url_template = product_url_prefix + '/%s'

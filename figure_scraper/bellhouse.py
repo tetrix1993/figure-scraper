@@ -5,6 +5,7 @@ import figure_scraper.constants as constants
 class BellHouse(Website):
     base_folder = constants.FOLDER_BELLHOUSE
     title = constants.WEBSITE_TITLE_BELLHOUSE
+    keywords = ["https://bellhouse-shop.com/"]
 
     news_url_template = 'https://bellhouse-shop.com/news/%s'
     product_url_template = 'https://bellhouse-shop.com/items/%s'

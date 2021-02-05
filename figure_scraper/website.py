@@ -9,6 +9,7 @@ from datetime import datetime
 class Website:
     base_folder = constants.FOLDER_BASE
     title = constants.WEBSITE_TITLE_BASE
+    keywords = []
 
     @classmethod
     def init(cls):
