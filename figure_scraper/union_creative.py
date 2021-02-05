@@ -27,4 +27,6 @@ class UnionCreative(Website):
                 image_name = cls.image_name_template % num
                 result = cls.download_image(image_url, image_name, print_error_message=False)
                 if result == -1:
+                    if i == 0:
+                        print('[INFO] Product ID %s not found.' % str(number))
                     break

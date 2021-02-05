@@ -13,8 +13,9 @@ class Website:
 
     @classmethod
     def init(cls):
-        if not os.path.exists(cls.base_folder):
-            os.makedirs(cls.base_folder)
+        pass
+        #if not os.path.exists(cls.base_folder):
+        #    os.makedirs(cls.base_folder)
 
     @classmethod
     def download_image(cls, url, filename, print_error_message=True, headers=None):

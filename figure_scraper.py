@@ -64,6 +64,11 @@ def search_websites_by_keywords():
 def list_websites(websites=None):
     if websites is None:
         websites = Website.__subclasses__()
+
+    if len(websites) == 1:
+        websites[0].run()
+        return
+
     print('[INFO] Select a website to scrape: ')
     number_max_len = len(str(len(websites)))
     for i in range(len(websites)):
@@ -100,5 +105,4 @@ def list_websites(websites=None):
 
 
 if __name__ == '__main__':
-    print('bell' in ['bell house', 'https://bellhouse-shop.com/'])
     run()
