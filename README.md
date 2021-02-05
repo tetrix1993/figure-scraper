@@ -8,6 +8,7 @@ The following packages are required:
 
 ## Websites
 The scraper scrapes the following websites:
+* [AmiAmi](https://amiami.jp/)
 * [Animaru](https://animaru.jp/)
 * [Aniplex+](https://www.aniplexplus.com/)
 * [Bell House](https://bellhouse-shop.com/)
