@@ -13,17 +13,18 @@ class Animaru(Website):
     @classmethod
     def run(cls):
         cls.init()
-        print('[INFO] %s Scraper' % cls.title)
-        print('[INFO] Product Page URL is in the format: http://www.hobbystock.jp/item/view/{prefix}-{id}')
-        prefix = input('Enter prefix (e.g. P): ').strip().upper()
-        if len(prefix) == 0:
-            return
-        expr = input('Enter expression (Product IDs): ').strip()
-        if len(expr) == 0:
-            return
-        numbers = cls.get_numbers_from_expression(expr)
-        for number in numbers:
-            cls.process_product_page(prefix, number)
+        while True:
+            print('[INFO] %s Scraper' % cls.title)
+            print('[INFO] Product Page URL is in the format: http://www.hobbystock.jp/item/view/{prefix}-{id}')
+            prefix = input('Enter prefix (e.g. P): ').strip().upper()
+            if len(prefix) == 0:
+                return
+            expr = input('Enter expression (Product IDs): ').strip()
+            if len(expr) == 0:
+                continue
+            numbers = cls.get_numbers_from_expression(expr)
+            for number in numbers:
+                cls.process_product_page(prefix, number)
 
     @classmethod
     def process_product_page(cls, prefix, product_id):

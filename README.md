@@ -29,3 +29,8 @@ The scraper scrapes the following websites:
     * Input `2-5` to download image ID 2 to 5.
     * Input `5,8` to download image ID 5 and 8.
     * Input `2-5,7,9-11` to download image ID 2, 3, 4, 5, 7, 9, 10, 11
+* To exit a scraper or cancel, enter `0` if it specifically states so. Otherwise enter blank input.
+
+## Other Notes
+* The saved images usually use the product ID as its name.
+* Some scrapers have an option to save image name as JAN (Japanese Article Number) code when the code is visible on the product page.
