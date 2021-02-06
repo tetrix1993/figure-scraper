@@ -14,6 +14,7 @@ The scraper scrapes the following websites:
 * [Bell House](https://bellhouse-shop.com/)
 * [F:Nex](https://fnex.jp/)
 * [Goodsmile Company](https://www.goodsmile.info/)
+* [Hobby Search](https://www.1999.co.jp/)
 * [Hobby Stock](http://www.hobbystock.jp/)
 * [Kotobukiya](https://www.kotobukiya.co.jp/)
 * [Medicos Entertainment](https://medicos-e-shop.net/)

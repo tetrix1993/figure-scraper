@@ -6,6 +6,7 @@ from figure_scraper.aniplexplus import AniplexPlus
 from figure_scraper.bellhouse import BellHouse
 from figure_scraper.fnex import Fnex
 from figure_scraper.goodsmile import Goodsmile
+from figure_scraper.hobbysearch import HobbySearch
 from figure_scraper.hobbystock import HobbyStock
 from figure_scraper.kotobukiya import Kotobukiya
 from figure_scraper.medicos import Medicos
