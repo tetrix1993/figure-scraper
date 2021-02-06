@@ -13,6 +13,7 @@ The scraper scrapes the following websites:
 * [Animate](https://www.animate-onlineshop.jp/)
 * [Aniplex+](https://www.aniplexplus.com/)
 * [Bell House](https://bellhouse-shop.com/)
+* [Cospa](https://cospa.co.jp/)
 * [F:Nex](https://fnex.jp/)
 * [Gamers](https://www.gamers.co.jp/)
 * [Goodsmile Company](https://www.goodsmile.info/)
