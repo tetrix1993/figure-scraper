@@ -1,6 +1,7 @@
 # Base folder to hold all folders representing different website
 FOLDER_BASE = 'download'
 
+FOLDER_ALTER = FOLDER_BASE + '/alter'
 FOLDER_AMAKUNI = FOLDER_BASE + '/amakuni'
 FOLDER_AMIAMI = FOLDER_BASE + '/amiami'
 FOLDER_ANIMARU = FOLDER_BASE + '/animaru'
@@ -29,6 +30,7 @@ DOWNLOAD_LOG_FILE = 'download_log.tsv'
 
 WEBSITE_TITLE_BASE = 'Website'
 
+WEBSITE_TITLE_ALTER = 'Alter'
 WEBSITE_TITLE_AMAKUNI = 'Amakuni'
 WEBSITE_TITLE_AMIAMI = 'AmiAmi'
 WEBSITE_TITLE_ANIMARU = 'Animaru'
