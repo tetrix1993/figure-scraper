@@ -2,6 +2,7 @@ from figure_scraper.website import Website
 
 from figure_scraper.amiami import AmiAmi
 from figure_scraper.animaru import Animaru
+from figure_scraper.animate import Animate
 from figure_scraper.aniplexplus import AniplexPlus
 from figure_scraper.bellhouse import BellHouse
 from figure_scraper.fnex import Fnex
