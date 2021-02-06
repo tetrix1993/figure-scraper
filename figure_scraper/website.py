@@ -39,6 +39,8 @@ class Website:
         try:
             with requests.get(url, stream=True, headers=headers) as r:
                 r.raise_for_status()
+                if 'image' not in r.headers['Content-Type']:
+                    raise Exception
                 with open(filepath, 'wb') as f:
                     for chunk in r.iter_content(chunk_size=8192):
                         if chunk:

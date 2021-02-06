@@ -8,6 +8,7 @@ The following packages are required:
 
 ## Websites
 The scraper scrapes the following websites:
+* [Amakuni](http://amakuni.info/)
 * [AmiAmi](https://amiami.jp/)
 * [Animaru](https://animaru.jp/)
 * [Animate](https://www.animate-onlineshop.jp/)

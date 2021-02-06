@@ -1,5 +1,6 @@
 from figure_scraper.website import Website
 
+from figure_scraper.amakuni import Amakuni
 from figure_scraper.amiami import AmiAmi
 from figure_scraper.animaru import Animaru
 from figure_scraper.animate import Animate
