@@ -14,6 +14,7 @@ The scraper scrapes the following websites:
 * [Aniplex+](https://www.aniplexplus.com/)
 * [Bell House](https://bellhouse-shop.com/)
 * [F:Nex](https://fnex.jp/)
+* [Gamers](https://www.gamers.co.jp/)
 * [Goodsmile Company](https://www.goodsmile.info/)
 * [Hobby Search](https://www.1999.co.jp/)
 * [Hobby Stock](http://www.hobbystock.jp/)
