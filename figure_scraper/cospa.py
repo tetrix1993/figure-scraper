@@ -62,9 +62,10 @@ class Cospa(Website):
                     print('[ERROR] Invalid choice.')
             if evaluate:
                 numbers = cls.get_numbers_from_expression(expr)
+                if is_scan:
+                    print('The result of the scan is saved at: %s' % constants.FILE_COSPA_SCAN_OUTPUT)
                 for number in numbers:
                     if is_scan:
-                        print('The result of the scan is saved at: %s' % constants.FILE_COSPA_SCAN_OUTPUT)
                         cls.scan_product_page(number)
                     else:
                         cls.process_product_page(number, use_jan)
@@ -78,7 +79,7 @@ class Cospa(Website):
             soup = cls.get_soup(product_url)
             divs = soup.find_all('div', class_='sp-thumbnail')
             if len(divs) == 0:
-                print('[ERROR] Product ID %s does not exists.' % id_)
+                print('[ERROR] Product ID %s does not exists.' % str(product_id))
                 return
             if use_jan:
                 jan_code = cls.get_jan_code(soup)
@@ -108,6 +109,9 @@ class Cospa(Website):
             soup = cls.get_soup(product_url)
             title = cls.get_product_title(soup)
             jan = cls.get_jan_code(soup)
+            if len(title) == 0 or len(jan) == 0:
+                print('[ERROR] Product ID %s does not exists.' % str(product_id))
+                return
             with open(constants.FILE_COSPA_SCAN_OUTPUT, 'a+', encoding='utf-8') as f:
                 f.write('%s\t%s\t%s\n' % (str(product_id), jan, title))
             print('Processed %s' % product_url)
