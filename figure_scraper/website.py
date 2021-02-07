@@ -20,6 +20,8 @@ class Website:
     @classmethod
     def download_image(cls, url, filename, print_error_message=True, headers=None):
         # Check local directory if the file exists
+        if filename[0] == '/':
+            filename = filename[1:]
         filepath = cls.base_folder + '/' + filename
         if os.path.exists(filepath):
             print("[INFO] File exists: " + filepath)
@@ -103,6 +105,17 @@ class Website:
             else:
                 return []
         return results
+
+    @classmethod
+    def get_sorted_page_numbers(cls, expr, start_from=0):
+        numbers = cls.get_numbers_from_expression(expr)
+        if len(numbers) > 0:
+            numbers = list(set(numbers))
+            numbers.sort()
+            for i in range(len(numbers)):
+                if numbers[i] >= start_from:
+                    return numbers[i:]
+        return numbers
 
     @staticmethod
     def generate_log(url, filepath):

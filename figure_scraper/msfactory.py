@@ -10,6 +10,8 @@ class MSFactory(Website):
 
     page_prefix = 'https://shop.ms-factory.net/'
     product_url_template = page_prefix + 'items/%s'
+    load_item_url_template = page_prefix + 'load_items/%s'
+    load_item_category_url_template = page_prefix + 'load_items/categories/%s/%s'
 
     @classmethod
     def run(cls):
@@ -19,7 +21,7 @@ class MSFactory(Website):
             print('[INFO] Select an option: ')
             print('1: Download by Product ID')
             print('2: Download by Categories')
-            print('3: Download by Items from Main Page')
+            print('3: Download Items from Main Page')
             print('0: Return')
 
             try:
@@ -58,11 +60,100 @@ class MSFactory(Website):
 
     @classmethod
     def download_by_categories(cls):
-        print('[INFO] Coming soon...')
+        input_str = input('Enter category IDs (if multiple, separate by comma): ')
+        if len(input_str) == 0:
+            return
+        split1 = input_str.split(',')
+        categories = []
+        for i in split1:
+            if len(i) > 0:
+                categories.append(i)
+        if len(categories) == 0:
+            return
+
+        expr = input('Enter page numbers to download (expression): ')
+        if len(expr) == 0:
+            return
+        numbers = cls.get_sorted_page_numbers(expr, start_from=1)
+        if len(numbers) == 0:
+            return
+        jan_result = cls.get_use_jan_choice()
+        use_jan = False
+        if jan_result == 1:
+            use_jan = True
+        elif jan_result == -1:
+            return
+
+        base_folder = constants.SUBFOLDER_MSFACTORY_CATEGORY
+        if len(categories) == 1 and len(numbers) == 1:
+            url = cls.load_item_category_url_template % (str(numbers[0]), categories[0])
+            product_ids = cls.get_product_ids_from_load_items_page(url)
+            if len(product_ids) == 0:
+                print('[ERROR] No items found on page %s' % str(numbers[0]))
+                return
+            else:
+                folder = base_folder + '/' + categories[0]
+                cls.process_product_pages(product_ids, folder, use_jan)
+        else:
+            max_processes = constants.MAX_PROCESSES
+            if max_processes <= 0:
+                max_processes = 1
+            with Pool(max_processes) as p:
+                results = []
+                for category in categories:
+                    for number in numbers:
+                        url = cls.load_item_category_url_template % (category, str(number))
+                        product_ids = cls.get_product_ids_from_load_items_page(url)
+                        if len(product_ids) == 0:
+                            print('[ERROR] No items found on page %s for category %s' % (str(number), category))
+                            break
+                        else:
+                            folder = base_folder + '/' + category
+                            result = p.apply_async(cls.process_product_pages, (product_ids, folder, use_jan))
+                            results.append(result)
+                for result in results:
+                    result.wait()
 
     @classmethod
     def download_from_main_page(cls):
-        print('[INFO] Coming soon...')
+        expr = input('Enter page numbers to download (expression): ')
+        if len(expr) == 0:
+            return
+        numbers = cls.get_sorted_page_numbers(expr, start_from=1)
+        if len(numbers) == 0:
+            return
+        jan_result = cls.get_use_jan_choice()
+        use_jan = False
+        if jan_result == 1:
+            use_jan = True
+        elif jan_result == -1:
+            return
+
+        folder = constants.SUBFOLDER_MSFACTORY_IMAGES
+        if len(numbers) == 1:
+            url = cls.load_item_url_template % str(numbers[0])
+            product_ids = cls.get_product_ids_from_load_items_page(url)
+            if len(product_ids) == 0:
+                print('[ERROR] No items found on page %s' % str(numbers[0]))
+                return
+            else:
+                cls.process_product_pages(product_ids, folder, use_jan)
+        else:
+            max_processes = constants.MAX_PROCESSES
+            if max_processes <= 0:
+                max_processes = 1
+            with Pool(max_processes) as p:
+                results = []
+                for number in numbers:
+                    url = cls.load_item_url_template % str(number)
+                    product_ids = cls.get_product_ids_from_load_items_page(url)
+                    if len(product_ids) == 0:
+                        print('[ERROR] No items found on page %s' % str(number))
+                        break
+                    result = p.apply_async(cls.process_product_pages, (product_ids, folder, use_jan))
+                    results.append(result)
+                for result in results:
+                    result.wait()
 
     @classmethod
     def get_use_jan_choice(cls):
@@ -86,16 +177,6 @@ class MSFactory(Website):
                 print('[ERROR] Invalid choice.')
 
     @classmethod
-    def get_sorted_page_numbers(cls, expr):
-        numbers = cls.get_numbers_from_expression(expr)
-        if len(numbers) > 0:
-            numbers = list(set(numbers))
-            numbers.sort()
-            if numbers[0] == 0:
-                return numbers[1:]
-        return numbers
-
-    @classmethod
     def process_product_page(cls, product_id, folder, use_jan=False):
         product_url = cls.product_url_template % product_id
         image_name_prefix = product_id
@@ -103,7 +184,7 @@ class MSFactory(Website):
             soup = cls.get_soup(product_url)
             div = soup.find('div', class_='item__mainImage')
             if not div:
-                print('[INFO] Product ID %s not found.' % product_id)
+                print('[ERROR] Product ID %s not found.' % product_id)
                 return
             if use_jan:
                 jan_code = cls.get_jan_code(soup)
@@ -122,6 +203,27 @@ class MSFactory(Website):
         except Exception as e:
             print('[ERROR] Error in processing %s' % product_url)
             print(e)
+
+    @classmethod
+    def process_product_pages(cls, product_ids, folder, use_jan=False):
+        for product_id in product_ids:
+            cls.process_product_page(product_id, folder, use_jan)
+
+    @classmethod
+    def get_product_ids_from_load_items_page(cls, url):
+        product_ids = []
+        try:
+            soup = cls.get_soup(url)
+            lis = soup.find_all('li')
+            for li in lis:
+                a_tag = li.find('a')
+                if a_tag and a_tag.has_attr('href'):
+                    product_id = a_tag['href'].split('/')[-1]
+                    product_ids.append(product_id)
+        except Exception as e:
+            print('[ERROR] Error in processing %s' % url)
+            print(e)
+        return product_ids
 
     @staticmethod
     def get_jan_code(soup):
