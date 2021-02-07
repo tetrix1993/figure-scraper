@@ -61,6 +61,7 @@ class Granup(Website):
 
     @classmethod
     def download_by_categories(cls):
+        print('[INFO] URL is in the form: https://granup.shop/products/list?category_id={category_id}&pageno={page_no}')
         category_expr = input('Enter category IDs (expression): ')
         if len(category_expr) == 0:
             return
