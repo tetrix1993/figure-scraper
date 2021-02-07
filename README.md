@@ -24,6 +24,7 @@ The scraper scrapes the following websites:
 * [Hobby Stock](http://www.hobbystock.jp/)
 * [Kotobukiya](https://www.kotobukiya.co.jp/)
 * [Medicos Entertainment](https://medicos-e-shop.net/)
+* [MS Factory](https://shop.ms-factory.net/)
 * [Neowing (CDJapan)](https://www.neowing.co.jp/)
 * [Penguin Parade](http://www.penguinparade.jp/)
 * [Union Creative](https://union-creative.jp/)
