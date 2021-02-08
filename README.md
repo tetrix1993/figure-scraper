@@ -20,6 +20,7 @@ The scraper scrapes the following websites:
 * [F:Nex](https://fnex.jp/)
 * [Gamers](https://www.gamers.co.jp/)
 * [Goodsmile Company](https://www.goodsmile.info/)
+* [GraffArt Shop](https://kyaragoods.shop-pro.jp/)
 * [Granup](https://granup.shop/)
 * [Hobby Search](https://www.1999.co.jp/)
 * [Hobby Stock](http://www.hobbystock.jp/)

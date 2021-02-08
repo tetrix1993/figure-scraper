@@ -60,16 +60,20 @@ class Website:
         return os.path.exists(cls.base_folder + '/' + filename)
 
     @staticmethod
-    def get_soup(url, headers=None, decode=False, cookies=None):
+    def get_soup(url, headers=None, decode=False, charset='utf-8', cookies=None, get_text=False):
         if headers is None:
             headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+        if charset:
+            headers['Content-Type'] = 'text/html; charset=' + charset
         try:
             if cookies:
                 result = requests.get(url, headers=headers, cookies=cookies)
             else:
                 result = requests.get(url, headers=headers)
+            if get_text:
+                return bs(str(result.text), 'html.parser')
             if decode:
-                return bs(result.content.decode(), 'html.parser')
+                return bs(result.content.decode(charset, errors='ignore'), 'html.parser')
             else:
                 return bs(result.content, 'html.parser')
         except Exception as e:

@@ -12,6 +12,7 @@ from figure_scraper.curtain_damashii import CurtainDamashii
 from figure_scraper.fnex import Fnex
 from figure_scraper.gamers import Gamers
 from figure_scraper.goodsmile import Goodsmile
+from figure_scraper.graffart import GraffArt
 from figure_scraper.granup import Granup
 from figure_scraper.hobbysearch import HobbySearch
 from figure_scraper.hobbystock import HobbyStock
