@@ -156,27 +156,6 @@ class MSFactory(Website):
                     result.wait()
 
     @classmethod
-    def get_use_jan_choice(cls):
-        while True:
-            print('Select name of file to save as: ')
-            print('1: Use Product ID as name')
-            print('2: Use JAN code as name if possible')
-            print('0: Return')
-
-            try:
-                choice = int(input('Enter choice: ').strip())
-                if choice == 1:
-                    return 0
-                elif choice == 2:
-                    return 1
-                elif choice == 0:
-                    return -1
-                else:
-                    raise Exception
-            except:
-                print('[ERROR] Invalid choice.')
-
-    @classmethod
     def process_product_page(cls, product_id, folder, use_jan=False):
         product_url = cls.product_url_template % product_id
         image_name_prefix = product_id

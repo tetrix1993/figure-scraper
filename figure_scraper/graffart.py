@@ -11,6 +11,8 @@ class GraffArt(Website):
 
     page_url_prefix = 'https://kyaragoods.shop-pro.jp/'
     group_page_template = page_url_prefix + '?mode=grp&gid=%s'
+    group_sorted_page_template = page_url_prefix + '?mode=grp&gid=%s&sort=n&page=%s'
+    product_page_template = page_url_prefix + '?pid=%s'
 
     @classmethod
     def run(cls):
@@ -18,8 +20,8 @@ class GraffArt(Website):
         while True:
             print('[INFO] %s Scraper' % cls.title)
             print('[INFO] Select an option: ')
-            print('1: Download by Product ID')
-            print('2: Download by Group ID')
+            print('1: Download by Product IDs')
+            print('2: Download by Group IDs')
             print('3: Scan and download new images based on Group ID of existing folders')
             print('4: Retrieve list of Group ID')
             print('0: Return')
@@ -43,15 +45,159 @@ class GraffArt(Website):
 
     @classmethod
     def download_by_product_id(cls):
-        print('Coming soon...')
+        print('[INFO] URL is in the form: https://kyaragoods.shop-pro.jp/?pid={product_id}')
+        expr = input('Enter product IDs (expression): ')
+        if len(expr) == 0:
+            return
+        product_ids = cls.get_sorted_page_numbers(expr)
+        if len(product_ids) == 0:
+            return
+        folder = constants.SUBFOLDER_GRAFFART_IMAGES
+        if len(product_ids) == 1:
+            cls.process_product_page(str(product_ids[0]), folder)
+        else:
+            max_processes = constants.MAX_PROCESSES
+            if max_processes <= 0:
+                max_processes = 1
+            with Pool(max_processes) as p:
+                results = []
+                for product_id in product_ids:
+                    result = p.apply_async(cls.process_product_page, (str(product_id), folder))
+                    results.append(result)
+                for result in results:
+                    result.wait()
 
     @classmethod
     def download_by_group_id(cls):
-        print('Coming soon...')
+        print('[INFO] URL is in the form: https://kyaragoods.shop-pro.jp/?mode=grp&gid={group_id}')
+        expr = input('Enter group IDs (expression): ')
+        if len(expr) == 0:
+            return
+        group_ids = cls.get_sorted_page_numbers(expr)
+        if len(group_ids) == 0:
+            return
+
+        result = cls.get_use_jan_choice()
+        use_jan = False
+        if result == 1:
+            use_jan = True
+        elif result == -1:
+            return
+
+        cls.process_group_pages(group_ids, use_jan)
 
     @classmethod
     def update_by_group_id(cls):
-        print('Coming soon...')
+        jan_result = cls.get_use_jan_choice()
+        use_jan = False
+        if jan_result == 1:
+            use_jan = True
+        elif jan_result == -1:
+            return
+
+        group_folder = cls.base_folder + '/' + constants.SUBFOLDER_GRAFFART_GROUP
+        folders = os.listdir(cls.base_folder + '/' + constants.SUBFOLDER_GRAFFART_GROUP)
+        max_processes = constants.MAX_PROCESSES
+        if max_processes <= 0:
+            max_processes = 1
+        with Pool(max_processes) as p:
+            results = []
+            for folder in folders:
+                if os.path.isdir(group_folder + '/' + folder):
+                    try:
+                        group_id = int(folder)
+                    except:
+                        continue
+                    result = p.apply_async(cls.process_group_page, (group_id, use_jan))
+                    results.append(result)
+            for result in results:
+                result.wait()
+
+    @classmethod
+    def process_product_page(cls, product_id, folder, jan_code=None):
+        url = cls.product_page_template % str(product_id)
+        if jan_code:
+            image_name_prefix = jan_code
+        else:
+            image_name_prefix = product_id
+        try:
+            soup = cls.get_soup(url)
+            images = soup.find_all('img', class_='zoom-tiny-image')
+            if len(images) == 0:
+                print('[ERROR] Product ID %s not found.' % str(product_id))
+                return
+            num_max_length = len(str(len(images)))
+            for i in range(len(images)):
+                if images[i].has_attr('src'):
+                    image_url = images[i]['src'].split('?')[0]
+                    if len(images) == 1:
+                        image_name = image_name_prefix + '.jpg'
+                    else:
+                        image_name = '%s_%s.jpg' % (image_name_prefix, str(i + 1).zfill(num_max_length))
+                    cls.download_image(image_url, folder + '/' + image_name)
+        except Exception as e:
+            print('[ERROR] Error in processing %s' % url)
+            print(e)
+
+    @classmethod
+    def process_group_pages(cls, group_ids, use_jan=False):
+        max_processes = constants.MAX_PROCESSES
+        if max_processes <= 0:
+            max_processes = 1
+        with Pool(max_processes) as p:
+            results = []
+            for group_id in group_ids:
+                folder = constants.SUBFOLDER_GRAFFART_GROUP + '/' + str(group_id)
+                for page in range(1, 101, 1):
+                    url = cls.group_sorted_page_template % (str(group_id), str(page))
+                    try:
+                        soup = cls.get_soup(url)
+                        divs = soup.find_all('div', class_='item_box')
+                        if len(divs) == 0:
+                            print('[ERROR] Group ID %s not found.' % str(group_id))
+                            break
+                        for div in divs:
+                            a_tag = div.find('a')
+                            if a_tag and a_tag.has_attr('href') and 'pid=' in a_tag['href']:
+                                pid = a_tag['href'].split('pid=')[1].strip()
+                                jan_code = None
+                                if use_jan:
+                                    jan_code = cls.get_jan_code(div)
+                                result = p.apply_async(cls.process_product_page, (pid, folder, jan_code))
+                                results.append(result)
+                        if not cls.has_next_page(soup, page + 1):
+                            break
+                    except Exception as e:
+                        print('[ERROR] Error in processing %s' % url)
+                        print(e)
+            for result in results:
+                result.wait()
+
+    @classmethod
+    def process_group_page(cls, group_id, use_jan=False):
+        folder = constants.SUBFOLDER_GRAFFART_GROUP + '/' + str(group_id)
+        for page in range(1, 101, 1):
+            url = cls.group_sorted_page_template % (str(group_id), str(page))
+            try:
+                soup = cls.get_soup(url)
+                divs = soup.find_all('div', class_='item_box')
+                if len(divs) == 0:
+                    print('[ERROR] Group ID %s not found.' % str(group_id))
+                    break
+                for div in divs:
+                    a_tag = div.find('a')
+                    if a_tag and a_tag.has_attr('href') and 'pid=' in a_tag['href']:
+                        pid = a_tag['href'].split('pid=')[1].strip()
+                        jan_code = None
+                        if use_jan:
+                            jan_code = cls.get_jan_code(div)
+                        if not cls.is_image_exists_in_group(folder, str(group_id), jan_code):
+                            cls.process_product_page(pid, folder, jan_code)
+                if not cls.has_next_page(soup, page + 1):
+                    break
+            except Exception as e:
+                print('[ERROR] Error in processing %s' % url)
+                print(e)
 
     @classmethod
     def retrieve_group_ids(cls):
@@ -130,3 +276,39 @@ class GraffArt(Website):
         except Exception as e:
             print('Error in processing %s' % cls.page_url_prefix)
             print(e)
+
+    @staticmethod
+    def get_jan_code(container):
+        result = ''
+        p_tag = container.find('p', class_='item_description')
+        if p_tag:
+            text = p_tag.text.strip()
+            if len(text) > 14 and text[0] == '【' and text[14] == '】':
+                result = text[1:14]
+        return result
+
+    @staticmethod
+    def has_next_page(soup, next_page):
+        pager = soup.find('div', class_='pager')
+        if pager:
+            a_tag = pager.find('a')
+            if a_tag and a_tag.has_attr('href') and '&' in a_tag['href']:
+                page_text = a_tag['href'].split('&')[-1]
+                return page_text == ('page=' + str(next_page))
+        return False
+
+    @classmethod
+    def is_image_exists_in_group(cls, folder, group_id, jan_code=None):
+        template = '%s/%s.jpg'
+        if jan_code:
+            list_ = [template % (folder, jan_code),
+                     template % (folder, jan_code + '_1'),
+                     template % (folder, jan_code + '_01')]
+        else:
+            list_ = [template % (folder, str(group_id)),
+                     template % (folder, str(group_id) + '_1'),
+                     template % (folder, str(group_id) + '_01')]
+        for item in list_:
+            if os.path.exists(cls.base_folder + '/' + item):
+                return True
+        return False

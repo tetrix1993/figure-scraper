@@ -1,6 +1,7 @@
 import os
 import re
 import requests
+import time
 import figure_scraper.constants as constants
 from bs4 import BeautifulSoup as bs
 from datetime import datetime
@@ -38,22 +39,26 @@ class Website:
             headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
 
         # Download image:
-        try:
-            with requests.get(url, stream=True, headers=headers) as r:
-                r.raise_for_status()
-                if 'image' not in r.headers['Content-Type']:
-                    raise Exception
-                with open(filepath, 'wb') as f:
-                    for chunk in r.iter_content(chunk_size=8192):
-                        if chunk:
-                            f.write(chunk)
-            print("[INFO] Downloaded " + url)
-            cls.generate_log(url, filepath)
-            return 0
-        except Exception as e:
-            if print_error_message:
-                print("[ERROR] Failed to download " + url + ' - ' + str(e))
-            return -1
+        attempt = 0
+        while attempt < constants.DOWNLOAD_MAX_ATTEMPT:
+            attempt += 1
+            try:
+                with requests.get(url, stream=True, headers=headers) as r:
+                    r.raise_for_status()
+                    if 'image' not in r.headers['Content-Type']:
+                        return -1
+                    with open(filepath, 'wb') as f:
+                        for chunk in r.iter_content(chunk_size=8192):
+                            if chunk:
+                                f.write(chunk)
+                print("[INFO] Downloaded " + url)
+                cls.generate_log(url, filepath)
+                return 0
+            except Exception as e:
+                if print_error_message:
+                    print("[ERROR] Failed to download " + url + ' - ' + str(e) + ' (Attempt ' + str(attempt) + ')')
+                time.sleep(constants.DOWNLOAD_REATTEMPT_WAIT_TIME * attempt)
+        return -1
 
     @classmethod
     def is_image_exists(cls, filename):
@@ -136,3 +141,24 @@ class Website:
             return url[0:len(url) - len(result[0][0]) - len(result[0][1])] + '.' + result[0][1]
         else:
             return url
+
+    @staticmethod
+    def get_use_jan_choice():
+        while True:
+            print('Select name of file to save as: ')
+            print('1: Use Product ID as name')
+            print('2: Use JAN code as name if possible')
+            print('0: Return')
+
+            try:
+                choice = int(input('Enter choice: ').strip())
+                if choice == 1:
+                    return 0
+                elif choice == 2:
+                    return 1
+                elif choice == 0:
+                    return -1
+                else:
+                    raise Exception
+            except:
+                print('[ERROR] Invalid choice.')
