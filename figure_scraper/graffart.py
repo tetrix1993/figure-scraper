@@ -2,6 +2,7 @@ from figure_scraper.website import Website
 import figure_scraper.constants as constants
 from multiprocessing import Pool
 import os
+import time
 
 
 class GraffArt(Website):
@@ -165,6 +166,7 @@ class GraffArt(Website):
                                     jan_code = cls.get_jan_code(div)
                                 result = p.apply_async(cls.process_product_page, (pid, folder, jan_code))
                                 results.append(result)
+                                time.sleep(constants.PROCESS_SPAWN_DELAY)
                         if not cls.has_next_page(soup, page + 1):
                             break
                     except Exception as e:
