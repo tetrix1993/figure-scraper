@@ -17,6 +17,7 @@ The scraper scrapes the following websites:
 * [Bell House](https://bellhouse-shop.com/)
 * [Cospa](https://cospa.co.jp/)
 * [Curtain Damashii](https://www.curtain-damashii.com/)
+* [Ensky](https://www.enskyshop.com/)
 * [F:Nex](https://fnex.jp/)
 * [Gamers](https://www.gamers.co.jp/)
 * [Goodsmile Company](https://www.goodsmile.info/)
