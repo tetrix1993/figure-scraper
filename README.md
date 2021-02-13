@@ -16,6 +16,7 @@ The scraper scrapes the following websites:
 * [Aniplex+](https://www.aniplexplus.com/)
 * [Bell House](https://bellhouse-shop.com/)
 * [Cospa](https://cospa.co.jp/)
+* [Crux](http://www.crux-onlinestore.com/)
 * [Curtain Damashii](https://www.curtain-damashii.com/)
 * [Ensky](https://www.enskyshop.com/)
 * [F:Nex](https://fnex.jp/)
