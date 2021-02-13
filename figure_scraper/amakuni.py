@@ -15,7 +15,7 @@ class Amakuni(Website):
         cls.init()
         while True:
             print('[INFO] %s Scraper' % cls.title)
-            print('[INFO] The image URL is in the form http://amakuni.info/images/item/{year}}/{product_id}/{num}.jpg')
+            print('[INFO] The image URL is in the form http://amakuni.info/images/item/{year}/{product_id}/{num}.jpg')
             year = input('Enter year: ')
             if len(year) == 0:
                 return

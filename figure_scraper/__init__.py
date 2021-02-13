@@ -3,6 +3,7 @@ from figure_scraper.website import Website
 from figure_scraper.alter import Alter
 from figure_scraper.amakuni import Amakuni
 from figure_scraper.amiami import AmiAmi
+from figure_scraper.amnibus import Amnibus
 from figure_scraper.animaru import Animaru
 from figure_scraper.animate import Animate
 from figure_scraper.aniplexplus import AniplexPlus

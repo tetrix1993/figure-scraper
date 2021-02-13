@@ -11,6 +11,7 @@ The scraper scrapes the following websites:
 * [Alter](https://alter-web.jp/)
 * [Amakuni](http://amakuni.info/)
 * [AmiAmi](https://amiami.jp/)
+* [Amnibus](https://amnibus.com/)
 * [Animaru](https://animaru.jp/)
 * [Animate](https://www.animate-onlineshop.jp/)
 * [Aniplex+](https://www.aniplexplus.com/)
