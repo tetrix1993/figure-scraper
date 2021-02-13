@@ -162,3 +162,12 @@ class Website:
                     raise Exception
             except:
                 print('[ERROR] Invalid choice.')
+
+    @classmethod
+    def is_product_id_processed(cls, product_id, folder):
+        base_path = cls.base_folder + '/' + folder + '/' + str(product_id)
+        for i in ['.jpg', '_1.jpg', '_01.jpg']:
+            if os.path.exists(base_path + i):
+                return True
+        else:
+            return False
