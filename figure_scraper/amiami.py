@@ -1,5 +1,6 @@
 from figure_scraper.website import Website
 import figure_scraper.constants as constants
+from multiprocessing import Pool
 
 
 class AmiAmi(Website):
@@ -44,9 +45,20 @@ class AmiAmi(Website):
                 except:
                     print('[ERROR] Invalid choice.')
             if evaluate:
-                numbers = cls.get_numbers_from_expression(expr)
-                for number in numbers:
-                    cls.process_product_page(prefix, number, use_jan)
+                numbers = cls.get_sorted_page_numbers(expr)
+                if len(numbers) == 1:
+                    cls.process_product_page(prefix, numbers[0], use_jan)
+                elif len(numbers) > 1:
+                    max_processes = constants.MAX_PROCESSES
+                    if max_processes <= 0:
+                        max_processes = 1
+                    with Pool(max_processes) as p:
+                        results = []
+                        for number in numbers:
+                            result = p.apply_async(cls.process_product_page, (prefix, number, use_jan))
+                            results.append(result)
+                        for result in results:
+                            result.wait()
 
     @classmethod
     def process_product_page(cls, prefix, product_id, use_jan=False):
