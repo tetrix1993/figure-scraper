@@ -171,3 +171,7 @@ class Website:
                 return True
         else:
             return False
+
+    @staticmethod
+    def get_today_date():
+        return datetime.today().strftime('%Y%m%d')

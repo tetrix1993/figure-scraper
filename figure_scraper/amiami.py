@@ -46,8 +46,10 @@ class AmiAmi(Website):
                     print('[ERROR] Invalid choice.')
             if evaluate:
                 numbers = cls.get_sorted_page_numbers(expr)
+                today = cls.get_today_date()
+                print('[INFO] Images will be saved at %s' % (cls.base_folder + '/' + today))
                 if len(numbers) == 1:
-                    cls.process_product_page(prefix, numbers[0], use_jan)
+                    cls.process_product_page(prefix, numbers[0], use_jan, today)
                 elif len(numbers) > 1:
                     max_processes = constants.MAX_PROCESSES
                     if max_processes <= 0:
@@ -55,13 +57,13 @@ class AmiAmi(Website):
                     with Pool(max_processes) as p:
                         results = []
                         for number in numbers:
-                            result = p.apply_async(cls.process_product_page, (prefix, number, use_jan))
+                            result = p.apply_async(cls.process_product_page, (prefix, number, use_jan, today))
                             results.append(result)
                         for result in results:
                             result.wait()
 
     @classmethod
-    def process_product_page(cls, prefix, product_id, use_jan=False):
+    def process_product_page(cls, prefix, product_id, use_jan=False, folder=None):
         padding = cls.get_padding_count(prefix)
         if padding == 0:
             print('[INFO] The scraper does not support %s' % prefix)
@@ -79,7 +81,10 @@ class AmiAmi(Website):
                         image_name_prefix = jan_code
                 main_image = main_image_div.find('img')
                 if main_image and main_image.has_attr('src'):
-                    cls.download_image(main_image['src'], image_name_prefix + '.jpg')
+                    main_image_name = image_name_prefix + '.jpg'
+                    if folder:
+                        main_image_name = folder + '/' + main_image_name
+                    cls.download_image(main_image['src'], main_image_name)
             else:
                 print('[ERROR] Product ID %s does not exists.' % id_)
                 return
@@ -93,6 +98,8 @@ class AmiAmi(Website):
                 if a_tag and a_tag.has_attr('href'):
                     image_url = a_tag['href']
                     image_name = '%s_%s.jpg' % (image_name_prefix, str(i + 1).zfill(num_max_length))
+                    if folder:
+                        image_name = folder + '/' + image_name
                     cls.download_image(image_url, image_name)
         except Exception as e:
             print('[ERROR] Error in processing %s' % product_url)

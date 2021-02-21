@@ -1,5 +1,6 @@
 from figure_scraper.website import Website
 import figure_scraper.constants as constants
+from multiprocessing import Pool
 
 
 class HobbySearch(Website):
@@ -42,12 +43,25 @@ class HobbySearch(Website):
                 except:
                     print('[ERROR] Invalid choice.')
             if evaluate:
-                numbers = cls.get_numbers_from_expression(expr)
-                for number in numbers:
-                    cls.process_product_page(number, use_jan)
+                numbers = cls.get_sorted_page_numbers(expr)
+                today = cls.get_today_date()
+                print('[INFO] Images will be saved at %s' % (cls.base_folder + '/' + today))
+                if len(numbers) == 1:
+                    cls.process_product_page(numbers[0], use_jan, today)
+                elif len(numbers) > 1:
+                    max_processes = constants.MAX_PROCESSES
+                    if max_processes <= 0:
+                        max_processes = 1
+                    with Pool(max_processes) as p:
+                        results = []
+                        for number in numbers:
+                            result = p.apply_async(cls.process_product_page, (number, use_jan, today))
+                            results.append(result)
+                        for result in results:
+                            result.wait()
 
     @classmethod
-    def process_product_page(cls, product_id, use_jan=False):
+    def process_product_page(cls, product_id, use_jan=False, folder=None):
         id_ = str(product_id)
         product_url = cls.product_url_template % id_
         image_name_prefix = id_
@@ -83,6 +97,8 @@ class HobbySearch(Website):
                                     image_name = image_name_prefix + '.jpg'
                                 else:
                                     image_name = '%s_%s.jpg' % (image_name_prefix, str(i + 1).zfill(num_max_length))
+                                if folder:
+                                    image_name = folder + '/' + image_name
                                 cls.download_image(image_url, image_name)
             if not image_found:
                 print('[ERROR] Product ID %s does not have image.' % id_)
