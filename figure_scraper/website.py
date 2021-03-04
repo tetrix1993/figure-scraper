@@ -19,7 +19,7 @@ class Website:
         #    os.makedirs(cls.base_folder)
 
     @classmethod
-    def download_image(cls, url, filename, print_error_message=True, headers=None):
+    def download_image(cls, url, filename, print_error_message=True, headers=None, try_count=None):
         # Check local directory if the file exists
         if filename[0] == '/':
             filename = filename[1:]
@@ -37,10 +37,12 @@ class Website:
 
         if headers is None:
             headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+        if try_count is None:
+            try_count = constants.DOWNLOAD_MAX_ATTEMPT
 
         # Download image:
         attempt = 0
-        while attempt < constants.DOWNLOAD_MAX_ATTEMPT:
+        while attempt < try_count:
             attempt += 1
             try:
                 with requests.get(url, stream=True, headers=headers) as r:
