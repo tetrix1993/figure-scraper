@@ -86,11 +86,29 @@ class CurtainDamashii(Website):
                 print('[INFO] Product ID %s not found.' % product_id)
                 return
             images = div.find_all('img')
+            image_urls = []
             for image in images:
                 if image.has_attr('src'):
                     image_url = image['src']
-                    image_name = folder + '/' + image_url.split('/')[-1]
-                    cls.download_image(image_url, image_name)
+                    if (image_url.endswith('.jpg') or image_url.endswith('.png')) and image_url not in image_urls:
+                        image_urls.append(image_url)
+                        image_name = folder + '/' + image_url.split('/')[-1]
+                        cls.download_image(image_url, image_name, try_count=1)
+            a_tags = div.find_all('a')
+            for a_tag in a_tags:
+                if a_tag.has_attr('href'):
+                    image_url = a_tag['href']
+                    if (image_url.endswith('.jpg') or image_url.endswith('.png')) and image_url not in image_urls:
+                        image_urls.append(image_url)
+                        image_name = folder + '/' + image_url.split('/')[-1]
+                        cls.download_image(image_url, image_name, try_count=1)
+            for url in image_urls:
+                if '_heya.jpg' in url:
+                    for i in ['_sample.jpg', '_sample_zoom.jpg']:
+                        image_url = url.replace('_heya.jpg', i)
+                        image_name = folder + '/' + image_url.split('/')[-1]
+                        if image_url not in image_urls:
+                            cls.download_image(image_url, image_name, try_count=1)
         except Exception as e:
             print('[ERROR] Error in processing %s' % product_url)
             print(e)
