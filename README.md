@@ -32,6 +32,7 @@ The scraper scrapes the following websites:
 * [MS Factory](https://shop.ms-factory.net/)
 * [Neowing (CDJapan)](https://www.neowing.co.jp/)
 * [Penguin Parade](http://www.penguinparade.jp/)
+* [QuesQ](http://www.quesq.net/)
 * [Union Creative](https://union-creative.jp/)
 * [Wave Corporation](https://www.hobby-wave.com/)
 
