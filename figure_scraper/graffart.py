@@ -193,7 +193,7 @@ class GraffArt(Website):
                         jan_code = None
                         if use_jan:
                             jan_code = cls.get_jan_code(div)
-                        if not cls.is_image_exists_in_group(folder, str(group_id), jan_code):
+                        if not cls.is_image_exists_in_group(folder, pid, jan_code):
                             cls.process_product_page(pid, folder, jan_code)
                 if not cls.has_next_page(soup, page + 1):
                     break
@@ -300,16 +300,16 @@ class GraffArt(Website):
         return False
 
     @classmethod
-    def is_image_exists_in_group(cls, folder, group_id, jan_code=None):
+    def is_image_exists_in_group(cls, folder, product_id, jan_code=None):
         template = '%s/%s.jpg'
         if jan_code:
             list_ = [template % (folder, jan_code),
                      template % (folder, jan_code + '_1'),
                      template % (folder, jan_code + '_01')]
         else:
-            list_ = [template % (folder, str(group_id)),
-                     template % (folder, str(group_id) + '_1'),
-                     template % (folder, str(group_id) + '_01')]
+            list_ = [template % (folder, str(product_id)),
+                     template % (folder, str(product_id) + '_1'),
+                     template % (folder, str(product_id) + '_01')]
         for item in list_:
             if os.path.exists(cls.base_folder + '/' + item):
                 return True
