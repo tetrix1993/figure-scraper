@@ -65,8 +65,10 @@ class Cospa(Website):
                 numbers = cls.get_sorted_page_numbers(expr)
                 if len(numbers) == 0:
                     continue
+                today = cls.get_today_date()
                 if is_scan:
-                    print('The result of the scan is saved at: %s' % constants.FILE_COSPA_SCAN_OUTPUT)
+                    output_file = constants.FILE_COSPA_SCAN_OUTPUT % today
+                    print('The result of the scan is saved at: %s' % output_file)
                     temp_folder = cls.base_folder + '/' + constants.SUBFOLDER_COSPA_TEMP
                     if not os.path.exists(temp_folder):
                         os.makedirs(temp_folder)
@@ -94,7 +96,7 @@ class Cospa(Website):
                                     split1 = line.replace('\n', '').split('\t')
                                     if len(split1) == 3:
                                         item_list.append({'id': split1[0], 'jan': split1[1], 'title': split1[2]})
-                    with open(constants.FILE_COSPA_SCAN_OUTPUT, 'a+', encoding='utf-8') as f:
+                    with open(output_file, 'a+', encoding='utf-8') as f:
                         for item in item_list:
                             f.write('%s\t%s\t%s\n' % (item['id'], item['jan'], item['title']))
                     for number in numbers:
@@ -104,7 +106,6 @@ class Cospa(Website):
                     if os.path.exists(temp_folder):
                         os.removedirs(temp_folder)
                 else:
-                    today = cls.get_today_date()
                     print('[INFO] Images will be saved at %s' % (cls.base_folder + '/' + today))
                     if len(numbers) == 1:
                         cls.process_product_page(numbers[0], use_jan, today)
