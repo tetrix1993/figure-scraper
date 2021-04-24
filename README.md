@@ -35,6 +35,7 @@ The scraper scrapes the following websites:
 * [QuesQ](http://www.quesq.net/)
 * [Union Creative](https://union-creative.jp/)
 * [Wave Corporation](https://www.hobby-wave.com/)
+* [YYWorld](https://yyworld.kawaiishop.jp/)
 
 ## Instructions
 * Execute `figure_scraper.py` on Command Prompt (or Terminal for MacOS).

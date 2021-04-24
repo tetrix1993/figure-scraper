@@ -27,3 +27,4 @@ from figure_scraper.penguinparade import PenguinParade
 from figure_scraper.quesq import Quesq
 from figure_scraper.union_creative import UnionCreative
 from figure_scraper.wave import WaveCorporation
+from figure_scraper.yyworld import YYWorld
