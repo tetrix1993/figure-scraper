@@ -29,6 +29,8 @@ class Crux(Website):
                     cls.download_by_product_id()
                 elif choice == 2:
                     cls.download_by_category()
+                elif choice == 0:
+                    break
                 else:
                     raise Exception
             except:
