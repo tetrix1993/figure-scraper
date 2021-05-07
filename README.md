@@ -34,6 +34,7 @@ The scraper scrapes the following websites:
 * [Neowing (CDJapan)](https://www.neowing.co.jp/)
 * [Penguin Parade](http://www.penguinparade.jp/)
 * [QuesQ](http://www.quesq.net/)
+* [Stella Notes](https://stellanotes.kawaiishop.jp/)
 * [Union Creative](https://union-creative.jp/)
 * [Wave Corporation](https://www.hobby-wave.com/)
 * [YYWorld](https://yyworld.kawaiishop.jp/)
