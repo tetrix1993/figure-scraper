@@ -11,6 +11,7 @@ from figure_scraper.bellhouse import BellHouse
 from figure_scraper.cospa import Cospa
 from figure_scraper.crux import Crux
 from figure_scraper.curtain_damashii import CurtainDamashii
+from figure_scraper.dashstore import Dashstore
 from figure_scraper.ensky import Ensky
 from figure_scraper.fnex import Fnex
 from figure_scraper.gamers import Gamers

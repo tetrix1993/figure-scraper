@@ -19,6 +19,7 @@ The scraper scrapes the following websites:
 * [Cospa](https://cospa.co.jp/)
 * [Crux](http://www.crux-onlinestore.com/)
 * [Curtain Damashii](https://www.curtain-damashii.com/)
+* [Dash Store](http://dashstore.net/)
 * [Ensky](https://www.enskyshop.com/)
 * [F:Nex](https://fnex.jp/)
 * [Gamers](https://www.gamers.co.jp/)
