@@ -22,7 +22,6 @@ class Dashstore(Website):
                 return
             cls.process_event_page(event_id)
 
-
     @classmethod
     def process_event_page(cls, event_id):
         url = cls.product_page_template % event_id
