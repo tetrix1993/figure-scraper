@@ -8,6 +8,7 @@ from figure_scraper.animaru import Animaru
 from figure_scraper.animate import Animate
 from figure_scraper.aniplexplus import AniplexPlus
 from figure_scraper.bellhouse import BellHouse
+from figure_scraper.cocollabo import Cocollabo
 from figure_scraper.cospa import Cospa
 from figure_scraper.crux import Crux
 from figure_scraper.curtain_damashii import CurtainDamashii
