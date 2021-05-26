@@ -44,8 +44,8 @@ class Cocollabo(Website):
         folder = constants.SUBFOLDER_COCOLLABO_IMAGES
         for product_id in product_ids:
             if len(product_id) > 0:
-                if cls.is_image_exists(folder + '/' + product_id + '_1') \
-                        or cls.is_image_exists(folder + '/' + product_id + '_01'):
+                if cls.is_image_exists(folder + '/' + product_id + '_1', has_extension=True) \
+                        or cls.is_image_exists(folder + '/' + product_id + '_01', has_extension=True):
                     print(f'[INFO] Product ID {product_id} already downloaded')
                     continue
                 final_product_ids.append(product_id)
@@ -113,8 +113,8 @@ class Cocollabo(Website):
                 for a_tag in a_tags:
                     if a_tag.has_attr('href'):
                         product_id = a_tag['href'].split('/')[-2]
-                        if cls.is_image_exists(folder + '/' + product_id + '_1') \
-                                or cls.is_image_exists(folder + '/' + product_id + '_01'):
+                        if cls.is_image_exists(folder + '/' + product_id + '_1', has_extension=True) \
+                                or cls.is_image_exists(folder + '/' + product_id + '_01', has_extension=True):
                             print(f'[INFO] Product ID {product_id} already downloaded')
                             continue
                         product_ids.append(product_id)

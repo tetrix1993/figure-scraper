@@ -63,8 +63,14 @@ class Website:
         return -1
 
     @classmethod
-    def is_image_exists(cls, filename):
-        return os.path.exists(cls.base_folder + '/' + filename)
+    def is_image_exists(cls, filename, has_extension=False):
+        if has_extension:
+            for extension in ['jpg', 'png', 'gif', 'jpeg']:
+                if os.path.exists(cls.base_folder + '/' + filename + '.' + extension):
+                    return True
+            return False
+        else:
+            return os.path.exists(cls.base_folder + '/' + filename)
 
     @staticmethod
     def get_soup(url, headers=None, decode=False, charset='utf-8', cookies=None, get_text=False):
