@@ -6,7 +6,7 @@ from multiprocessing import Pool
 class Cocollabo(Website):
     base_folder = constants.FOLDER_COCOLLABO
     title = constants.WEBSITE_TITLE_COCOLLABO
-    keywords = ["https://www.cocollabo.net/"]
+    keywords = ["https://www.cocollabo.net/", "Caravan"]
 
     page_prefix = 'https://www.cocollabo.net/'
     product_url_template = page_prefix + 'shop/g/%s/'
