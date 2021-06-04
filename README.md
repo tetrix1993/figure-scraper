@@ -21,6 +21,7 @@ The scraper scrapes the following websites:
 * [Crux](http://www.crux-onlinestore.com/)
 * [Curtain Damashii](https://www.curtain-damashii.com/)
 * [Dash Store](http://dashstore.net/)
+* [Dezaegg](http://dezaegg.com/)
 * [Ensky](https://www.enskyshop.com/)
 * [F:Nex](https://fnex.jp/)
 * [Gamers](https://www.gamers.co.jp/)
