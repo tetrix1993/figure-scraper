@@ -29,7 +29,7 @@ class Quesq(Website):
             if len(product_ids) == 1:
                 cls.process_product_page(product_ids[0])
             elif len(product_ids) > 1:
-                max_processes = constants.MAX_PROCESSES
+                max_processes = min(constants.MAX_PROCESSES, len(product_ids))
                 if max_processes <= 0:
                     max_processes = 1
                 with Pool(max_processes) as p:

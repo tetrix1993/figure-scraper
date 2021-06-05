@@ -56,8 +56,20 @@ class Granup(Website):
         elif result == -1:
             return
 
-        for product_id in product_ids:
-            cls.process_product_page(str(product_id), constants.SUBFOLDER_GRANUP_IMAGES, use_jan)
+        folder = constants.SUBFOLDER_GRANUP_IMAGES + '/' + cls.get_today_date()
+        if len(product_ids) == 1:
+            cls.process_product_page(str(product_ids[0]), folder, use_jan)
+        elif len(product_ids) > 1:
+            max_processes = min(constants.MAX_PROCESSES, len(product_ids))
+            if max_processes <= 0:
+                max_processes = 1
+            with Pool(max_processes) as p:
+                results = []
+                for product_id in product_ids:
+                    result = p.apply_async(cls.process_product_page, (str(product_id), folder, use_jan))
+                    results.append(result)
+                for result in results:
+                    result.wait()
 
     @classmethod
     def download_by_categories(cls):

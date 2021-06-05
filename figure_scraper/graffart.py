@@ -57,7 +57,7 @@ class GraffArt(Website):
         if len(product_ids) == 1:
             cls.process_product_page(str(product_ids[0]), folder)
         else:
-            max_processes = constants.MAX_PROCESSES
+            max_processes = min(constants.MAX_PROCESSES, len(product_ids))
             if max_processes <= 0:
                 max_processes = 1
             with Pool(max_processes) as p:
@@ -97,22 +97,29 @@ class GraffArt(Website):
             return
 
         group_folder = cls.base_folder + '/' + constants.SUBFOLDER_GRAFFART_GROUP
-        folders = os.listdir(cls.base_folder + '/' + constants.SUBFOLDER_GRAFFART_GROUP)
-        max_processes = constants.MAX_PROCESSES
-        if max_processes <= 0:
-            max_processes = 1
-        with Pool(max_processes) as p:
-            results = []
-            for folder in folders:
-                if os.path.isdir(group_folder + '/' + folder):
-                    try:
-                        group_id = int(folder)
-                    except:
-                        continue
+        folders = os.listdir(group_folder)
+        group_ids = []
+        for folder in folders:
+            if os.path.isdir(group_folder + '/' + folder):
+                try:
+                    group_id = int(folder)
+                    group_ids.append(group_id)
+                except:
+                    continue
+
+        if len(group_ids) == 1:
+            cls.process_group_page(group_ids[0], use_jan)
+        else:
+            max_processes = min(constants.MAX_PROCESSES, len(group_ids))
+            if max_processes <= 0:
+                max_processes = 1
+            with Pool(max_processes) as p:
+                results = []
+                for group_id in group_ids:
                     result = p.apply_async(cls.process_group_page, (group_id, use_jan))
                     results.append(result)
-            for result in results:
-                result.wait()
+                for result in results:
+                    result.wait()
 
     @classmethod
     def process_product_page(cls, product_id, folder, jan_code=None):
@@ -211,7 +218,7 @@ class GraffArt(Website):
             div = soup.find('div', id='box_group')
             if div:
                 a_tags = div.find_all('a')
-                max_processes = constants.MAX_PROCESSES
+                max_processes = min(constants.MAX_PROCESSES, len(a_tags))
                 if max_processes <= 0:
                     max_processes = 1
                 gids = []

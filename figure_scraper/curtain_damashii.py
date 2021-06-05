@@ -139,16 +139,19 @@ class CurtainDamashii(Website):
 
     @classmethod
     def process_tag_pages(cls, tags):
-        max_processes = constants.MAX_PROCESSES
-        if max_processes <= 0:
-            max_processes = 1
-        with Pool(max_processes) as p:
-            results = []
-            for tag in tags:
-                result = p.apply_async(cls.process_tag_page, (tag, constants.SUBFOLDER_CURTAIN_DAMASHII_TAG))
-                results.append(result)
-            for result in results:
-                result.wait()
+        if len(tags) == 1:
+            cls.process_tag_page(tags[0], constants.SUBFOLDER_CURTAIN_DAMASHII_TAG)
+        elif len(tags) > 0:
+            max_processes = min(constants.MAX_PROCESSES, len(tags))
+            if max_processes <= 0:
+                max_processes = 1
+            with Pool(max_processes) as p:
+                results = []
+                for tag in tags:
+                    result = p.apply_async(cls.process_tag_page, (tag, constants.SUBFOLDER_CURTAIN_DAMASHII_TAG))
+                    results.append(result)
+                for result in results:
+                    result.wait()
         print('[INFO] All tags have been processed.')
 
     @classmethod

@@ -51,7 +51,7 @@ class AmiAmi(Website):
                 if len(numbers) == 1:
                     cls.process_product_page(prefix, numbers[0], use_jan, today)
                 elif len(numbers) > 1:
-                    max_processes = constants.MAX_PROCESSES
+                    max_processes = min(constants.MAX_PROCESSES, len(numbers))
                     if max_processes <= 0:
                         max_processes = 1
                     with Pool(max_processes) as p:

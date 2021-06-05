@@ -1,5 +1,7 @@
 from figure_scraper.website import Website
 import figure_scraper.constants as constants
+from multiprocessing import Pool
+import time
 
 
 class Animaru(Website):
@@ -22,12 +24,35 @@ class Animaru(Website):
             expr = input('Enter expression (Product IDs): ').strip()
             if len(expr) == 0:
                 continue
-            numbers = cls.get_numbers_from_expression(expr)
-            for number in numbers:
-                cls.process_product_page(prefix, number)
+            unfiltered_numbers = cls.get_numbers_from_expression(expr)
+            today = cls.get_today_date()
+            numbers = []
+            for number in unfiltered_numbers:
+                product_id = prefix + str(number)
+                filepath = today + '/' + product_id
+                if cls.is_image_exists(filepath, has_extension=True) \
+                        or cls.is_image_exists(filepath + '_1', has_extension=True) \
+                        or cls.is_image_exists(filepath + '_01', has_extension=True):
+                    print(f'[INFO] Product ID {product_id} already downloaded')
+                    continue
+                numbers.append(number)
+            if len(numbers) == 1:
+                cls.process_product_page(prefix, numbers[0], today)
+            elif len(numbers) > 1:
+                max_processes = min(constants.MAX_PROCESSES, len(numbers))
+                if max_processes <= 0:
+                    max_processes = 1
+                with Pool(max_processes) as p:
+                    results = []
+                    for number in numbers:
+                        result = p.apply_async(cls.process_product_page, (prefix, number, today))
+                        results.append(result)
+                        time.sleep(constants.PROCESS_SPAWN_DELAY)
+                    for result in results:
+                        result.wait()
 
     @classmethod
-    def process_product_page(cls, prefix, product_id):
+    def process_product_page(cls, prefix, product_id, folder=None):
         id_ = prefix + str(product_id)
         product_url = cls.product_url_template % id_
         try:
@@ -45,6 +70,8 @@ class Animaru(Website):
                         image_name = id_ + '.jpg'
                     else:
                         image_name = '%s_%s.jpg' % (id_, str(i + 1).zfill(num_max_length))
+                    if folder:
+                        image_name = folder + '/' + image_name
                     cls.download_image(image_url, image_name)
         except Exception as e:
             print('[ERROR] Error in processing %s' % product_url)

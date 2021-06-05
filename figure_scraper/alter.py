@@ -1,5 +1,7 @@
 from figure_scraper.website import Website
 import figure_scraper.constants as constants
+from multiprocessing import Pool
+import time
 
 
 class Alter(Website):
@@ -19,9 +21,27 @@ class Alter(Website):
             expr = input('Enter expression (Product IDs): ').strip()
             if len(expr) == 0:
                 return
-            numbers = cls.get_numbers_from_expression(expr)
-            for number in numbers:
-                cls.process_product_page(number)
+            unfiltered_numbers = cls.get_numbers_from_expression(expr)
+            numbers = []
+            for number in unfiltered_numbers:
+                if cls.is_image_exists(str(number), has_extension=True):
+                    print(f'[INFO] Product ID {number} already downloaded')
+                    continue
+                numbers.append(number)
+            if len(numbers) == 1:
+                cls.process_product_page(numbers[0])
+            elif len(numbers) > 1:
+                max_processes = min(constants.MAX_PROCESSES, len(numbers))
+                if max_processes <= 0:
+                    max_processes = 1
+                with Pool(max_processes) as p:
+                    results = []
+                    for number in numbers:
+                        result = p.apply_async(cls.process_product_page, (number, ))
+                        results.append(result)
+                        time.sleep(constants.PROCESS_SPAWN_DELAY)
+                    for result in results:
+                        result.wait()
 
     @classmethod
     def process_product_page(cls, product_id):

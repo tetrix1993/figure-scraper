@@ -41,10 +41,12 @@ class Cocollabo(Website):
         expr = input('Enter product IDs (separated by commas): ')
         product_ids = expr.split(',')
         final_product_ids = []
-        folder = constants.SUBFOLDER_COCOLLABO_IMAGES
+        today = cls.get_today_date()
+        folder = constants.SUBFOLDER_COCOLLABO_IMAGES + '/' + today
         for product_id in product_ids:
             if len(product_id) > 0:
-                if cls.is_image_exists(folder + '/' + product_id + '_1', has_extension=True) \
+                if cls.is_image_exists(folder + '/' + product_id, has_extension=True) \
+                        or cls.is_image_exists(folder + '/' + product_id + '_1', has_extension=True) \
                         or cls.is_image_exists(folder + '/' + product_id + '_01', has_extension=True):
                     print(f'[INFO] Product ID {product_id} already downloaded')
                     continue
@@ -55,7 +57,7 @@ class Cocollabo(Website):
         elif len(final_product_ids) == 1:
             cls.process_product_page(final_product_ids[0], folder)
         else:
-            max_processes = constants.MAX_PROCESSES
+            max_processes = min(constants.MAX_PROCESSES, len(final_product_ids))
             if max_processes <= 0:
                 max_processes = 1
             with Pool(max_processes) as p:
@@ -93,7 +95,13 @@ class Cocollabo(Website):
             num_max_length = len(str(len(images)))
             for i in range(len(images)):
                 image_url = 'https:' + images[i]['href']
-                image_name = '%s_%s.jpg' % (image_name_prefix, str(i + 1).zfill(num_max_length))
+                extension = 'jpg'
+                if '.png' in image_url:
+                    extension = 'png'
+                if len(images) == 1:
+                    image_name = image_name_prefix + '.' + extension
+                else:
+                    image_name = '%s_%s.%s' % (image_name_prefix, str(i + 1).zfill(num_max_length), extension)
                 cls.download_image(image_url, folder + '/' + image_name)
         except Exception as e:
             print('[ERROR] Error in processing %s' % product_url)

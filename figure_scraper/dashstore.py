@@ -32,7 +32,7 @@ class Dashstore(Website):
             banner_imgs = soup.select('div.slideimg img')
             if len(banner_imgs) > 0:
                 images = [banner_imgs[0]] + images
-            max_processes = constants.MAX_PROCESSES
+            max_processes = min(constants.MAX_PROCESSES, len(images))
             if max_processes <= 0:
                 max_processes = 1
             with Pool(max_processes) as p:
