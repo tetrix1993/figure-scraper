@@ -102,7 +102,7 @@ class Granup(Website):
                 print('[ERROR] No items found on page %s' % str(numbers[0]))
                 return
             else:
-                folder = base_folder + '/' + categories[0]
+                folder = base_folder + '/' + str(categories[0])
                 cls.process_product_pages(product_ids, folder, use_jan)
         else:
             max_processes = constants.MAX_PROCESSES
