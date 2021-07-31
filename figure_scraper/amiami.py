@@ -89,14 +89,13 @@ class AmiAmi(Website):
                 print('[ERROR] Product ID %s does not exists.' % id_)
                 return
 
-            divs = soup.find_all('div', class_='gallery_item_review')
-            if len(divs) == 0:
+            images = soup.select('div.gallery_item_review img')
+            if len(images) == 0:
                 return
-            num_max_length = len(str(len(divs)))
-            for i in range(len(divs)):
-                a_tag = divs[i].find('a')
-                if a_tag and a_tag.has_attr('href'):
-                    image_url = a_tag['href']
+            num_max_length = len(str(len(images)))
+            for i in range(len(images)):
+                if images[i] and images[i].has_attr('src'):
+                    image_url = images[i]['src']
                     image_name = '%s_%s.jpg' % (image_name_prefix, str(i + 1).zfill(num_max_length))
                     if folder:
                         image_name = folder + '/' + image_name
