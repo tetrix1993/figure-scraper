@@ -95,7 +95,7 @@ class AmiAmi(Website):
             num_max_length = len(str(len(images)))
             for i in range(len(images)):
                 if images[i] and images[i].has_attr('src'):
-                    image_url = images[i]['src']
+                    image_url = images[i]['src'].replace('rthumb', 'review')
                     image_name = '%s_%s.jpg' % (image_name_prefix, str(i + 1).zfill(num_max_length))
                     if folder:
                         image_name = folder + '/' + image_name
