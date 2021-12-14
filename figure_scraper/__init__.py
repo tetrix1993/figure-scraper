@@ -25,6 +25,7 @@ from figure_scraper.granup import Granup
 from figure_scraper.hobbysearch import HobbySearch
 from figure_scraper.hobbystock import HobbyStock
 from figure_scraper.kotobukiya import Kotobukiya
+from figure_scraper.kujibikido import Kujibikido
 from figure_scraper.medicos import Medicos
 from figure_scraper.msfactory import MSFactory
 from figure_scraper.neowing import Neowing
