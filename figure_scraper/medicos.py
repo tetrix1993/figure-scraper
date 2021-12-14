@@ -77,7 +77,8 @@ class Medicos(Website):
             for i in range(len(divs)):
                 image = divs[i].find('img')
                 if image and image.has_attr('src'):
-                    image_url = cls.product_url_prefix + image['src']
+                    # image_url = cls.product_url_prefix + image['src']
+                    image_url = image['src']
                     if len(divs) == 1:
                         image_name = prefix + '.jpg'
                     else:
