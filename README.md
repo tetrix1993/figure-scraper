@@ -32,6 +32,7 @@ The scraper scrapes the following websites:
 * [Hobby Search](https://www.1999.co.jp/)
 * [Hobby Stock](http://www.hobbystock.jp/)
 * [Kotobukiya](https://www.kotobukiya.co.jp/)
+* [Kujibikido](https://kujibikido.com/)
 * [Medicos Entertainment](https://medicos-e-shop.net/)
 * [MS Factory](https://shop.ms-factory.net/)
 * [Neowing (CDJapan)](https://www.neowing.co.jp/)
