@@ -93,7 +93,7 @@ class Amnibus(Website):
     @classmethod
     def process_event_id_input(cls):
         while True:
-            print('[INFO] Page URL is in the format: https://event.amnibus.com/osamake-sofmap/{event_id}/')
+            print('[INFO] Page URL is in the format: https://event.amnibus.com/{event_id}/')
             expr = input('Enter Event ID: ').strip()
             if len(expr) == 0:
                 return
