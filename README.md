@@ -22,6 +22,7 @@ The scraper scrapes the following websites:
 * [Curtain Damashii](https://www.curtain-damashii.com/)
 * [Dash Store](http://dashstore.net/)
 * [Dezaegg](http://dezaegg.com/)
+* [DMM Scratch](https://scratch.dmm.com/)
 * [Eeo Store](https://eeo.today/)
 * [Ensky](https://www.enskyshop.com/)
 * [F:Nex](https://fnex.jp/)
