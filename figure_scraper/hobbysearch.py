@@ -67,7 +67,7 @@ class HobbySearch(Website):
         image_name_prefix = id_
         try:
             soup = cls.get_soup(product_url)
-            a_tags = soup.find_all('a', {'target': '_blank'})
+            a_tags = soup.find_all('a', {'target': id_})
             a_tag = None
             for tag in a_tags:
                 if tag.has_attr('href') and 'image' in tag['href']:
