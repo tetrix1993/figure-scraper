@@ -11,7 +11,7 @@ class Amnibus(Website):
 
     page_prefix = 'https://amnibus.com'
     product_url_template = page_prefix + '/products/detail/%s'
-    event_url_template = 'https://event.amnibus.com/%s/'
+    event_url_template = 'https://%s.amnibus.com/%s/'
 
     @classmethod
     def run(cls):
@@ -93,16 +93,19 @@ class Amnibus(Website):
     @classmethod
     def process_event_id_input(cls):
         while True:
-            print('[INFO] Page URL is in the format: https://event.amnibus.com/{event_id}/')
+            print('[INFO] Page URL is in the format: https://{type}.amnibus.com/{event_id}/')
+            link_type = input('Enter type (event or store): ').strip()
+            if len(link_type) == 0:
+                return
             expr = input('Enter Event ID: ').strip()
             if len(expr) == 0:
-                return
-            cls.download_event(expr, constants.SUBFOLDER_AMNIBUS_EVENT + '/' + expr)
+                continue
+            cls.download_event(expr, link_type, constants.SUBFOLDER_AMNIBUS_EVENT + '/' + expr)
 
     @classmethod
-    def download_event(cls, event_id, folder=None):
+    def download_event(cls, event_id, link_type, folder=None):
         id_ = str(event_id)
-        event_url = cls.event_url_template % id_
+        event_url = cls.event_url_template % (link_type, id_)
         try:
             soup = cls.get_soup(event_url)
             images = soup.select('h2 img, img.base-image')
