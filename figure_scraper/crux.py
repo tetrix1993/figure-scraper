@@ -85,7 +85,7 @@ class Crux(Website):
                 for page in range(1, 101, 1):
                     url = cls.category_url_template % (str(category_id), str(page))
                     try:
-                        soup = cls.get_soup(url)
+                        soup = cls.get_soup(url, headers={})
                         if not soup:
                             break
                         inner_lists = soup.find_all('ul', class_='innerList')
@@ -127,7 +127,7 @@ class Crux(Website):
         product_url = cls.product_url_template % id_
         image_name_prefix = folder + '/' + id_
         try:
-            soup = cls.get_soup(product_url)
+            soup = cls.get_soup(product_url, headers={})
             div = soup.find('div', class_='M_imageMain')
             if not div:
                 # Page only has one image
