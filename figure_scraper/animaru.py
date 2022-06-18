@@ -65,7 +65,7 @@ class Animaru(Website):
             for i in range(len(divs)):
                 image = divs[i].find('img')
                 if image and image.has_attr('data-normal'):
-                    image_url = cls.product_page_prefix + image['data-normal']
+                    image_url = cls.product_page_prefix + image['data-normal'].replace('_M.jpg', '.jpg')
                     if len(divs) == 1:
                         image_name = id_ + '.jpg'
                     else:
