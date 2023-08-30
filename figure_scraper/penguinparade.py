@@ -91,7 +91,7 @@ class PenguinParade(Website):
             if '：' in s:
                 result = s.split('：')[1].strip()
             else:
-                result = s
+                result = s.strip()
             if len(result) == 0:
                 continue
             results.append(result)
