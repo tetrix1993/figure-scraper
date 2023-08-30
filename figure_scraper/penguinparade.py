@@ -23,22 +23,24 @@ class PenguinParade(Website):
             if len(expr) == 0:
                 return
             numbers = cls.get_numbers_from_expression(expr)
-
+            folder = cls.get_today_date()
             result = cls.get_use_jan_choice()
             if result == 0:
-                cls.process_product_page_without_jan(numbers)
+                cls.process_product_page_without_jan(numbers, folder)
             elif result == 1:
-                cls.process_product_page_with_jan(numbers)
+                cls.process_product_page_with_jan(numbers, folder)
             else:
                 continue
 
     @classmethod
-    def process_product_page_without_jan(cls, numbers):
+    def process_product_page_without_jan(cls, numbers, folder=None):
         for number in numbers:
             id_ = str(number).zfill(12)
             for i in range(99):
                 image_url = cls.image_url_template % (str(i), id_)
                 image_name = cls.image_name_template % (str(number), str(i))
+                if folder:
+                    image_name = folder + '/' + image_name
                 result = cls.download_image(image_url, image_name, print_error_message=False)
                 if result == -1:
                     if i == 0:
@@ -46,7 +48,7 @@ class PenguinParade(Website):
                     break
 
     @classmethod
-    def process_product_page_with_jan(cls, numbers):
+    def process_product_page_with_jan(cls, numbers, folder=None):
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36',
             'Host': 'www.penguinparade.jp'
@@ -68,13 +70,18 @@ class PenguinParade(Website):
             except Exception as e:
                 print('[ERROR] Error in processing %s' % product_url)
                 print(e)
-            if len(jan_codes) == 0 or image_count == 0 or len(jan_codes) != image_count:
-                cls.process_product_page_without_jan([number])
+            if len(jan_codes) == 0 or image_count == 0 or (len(jan_codes) != image_count and len(jan_codes) != 1):
+                cls.process_product_page_without_jan([number], folder)
                 continue
 
             for i in range(image_count):
                 image_url = cls.image_url_template % (str(i), id_)
-                image_name = jan_codes[i] + '.jpg'
+                if len(jan_codes) == 1:
+                    image_name = cls.image_name_template % (jan_codes[0], str(i))
+                else:
+                    image_name = jan_codes[i] + '.jpg'
+                if folder:
+                    image_name = folder + '/' + image_name
                 result = cls.download_image(image_url, image_name, print_error_message=False)
                 if result == -1:
                     if i == 0:
