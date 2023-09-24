@@ -43,10 +43,10 @@ class Kujicolle(Website):
                     elif number_found and not img_name[i].isnumeric():
                         last_idx = i
                         break
-                if first_idx == -1 or last_idx == -1:
-                    image_name = img_name
-                elif last_idx != -1:
+                if first_idx != -1 and last_idx != -1:
                     image_name = img_name[:last_idx] + '.jpg'
+                else:
+                    image_name = img_name
                 cls.download_image(image_url, page + '/' + image_name)
         except Exception as e:
             print(f'[ERROR] Error in processing {page_url}: {e}')
