@@ -32,7 +32,21 @@ class Kujicolle(Website):
                 return
             for image in images:
                 image_url = image['href']
-                image_name = image['data-title'].strip() + '.jpg'
+                img_name = image['data-title'].strip() + '.jpg'
+                number_found = False
+                first_idx = -1
+                last_idx = -1
+                for i in range(len(img_name)):
+                    if img_name[i].isnumeric():
+                        number_found = True
+                        first_idx = i
+                    elif number_found and not img_name[i].isnumeric():
+                        last_idx = i
+                        break
+                if first_idx == -1 or last_idx == -1:
+                    image_name = img_name
+                elif last_idx != -1:
+                    image_name = img_name[:last_idx] + '.jpg'
                 cls.download_image(image_url, page + '/' + image_name)
         except Exception as e:
             print(f'[ERROR] Error in processing {page_url}: {e}')
