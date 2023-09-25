@@ -28,6 +28,7 @@ from figure_scraper.hobbystock import HobbyStock
 from figure_scraper.kotobukiya import Kotobukiya
 from figure_scraper.kujibikido import Kujibikido
 from figure_scraper.kujicolle import Kujicolle
+from figure_scraper.luckychallengekuji import LuckyChallengeKuji
 from figure_scraper.medicos import Medicos
 from figure_scraper.msfactory import MSFactory
 from figure_scraper.neowing import Neowing
