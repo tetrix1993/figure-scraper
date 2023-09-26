@@ -6,6 +6,7 @@ from figure_scraper.amiami import AmiAmi
 from figure_scraper.amnibus import Amnibus
 from figure_scraper.animaru import Animaru
 from figure_scraper.animate import Animate
+from figure_scraper.aucoop import Aucoop
 from figure_scraper.aniplexplus import AniplexPlus
 from figure_scraper.bellhouse import BellHouse
 from figure_scraper.charasupply import CharaSupply

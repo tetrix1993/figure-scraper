@@ -75,7 +75,7 @@ class Website:
     @staticmethod
     def get_soup(url, headers=None, decode=False, charset='utf-8', cookies=None, get_text=False):
         if headers is None:
-            headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+            headers = constants.HTTP_HEADER_USER_AGENT
         if charset:
             headers['Content-Type'] = 'text/html; charset=' + charset
         try:
@@ -92,6 +92,14 @@ class Website:
         except Exception as e:
             print(e)
         return None
+
+    @staticmethod
+    def get_json(url, headers=None):
+        if headers is None:
+            headers = constants.HTTP_HEADER_USER_AGENT
+        r = requests.get(url, headers=headers)
+        r.raise_for_status()
+        return r.json()
 
     @staticmethod
     def get_numbers_from_expression(expr):
