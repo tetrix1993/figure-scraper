@@ -33,6 +33,7 @@ from figure_scraper.luckychallengekuji import LuckyChallengeKuji
 from figure_scraper.medicos import Medicos
 from figure_scraper.msfactory import MSFactory
 from figure_scraper.neowing import Neowing
+from figure_scraper.onlinekujira import OnlineKujira
 from figure_scraper.penguinparade import PenguinParade
 from figure_scraper.quesq import Quesq
 from figure_scraper.saing import Saing
