@@ -59,7 +59,7 @@ class DmmScratch(Website):
                     continue
                 item_url = images[0]['src'].split('?')[0]
                 if len(text_body) > 0:
-                    item_name = ' '.join(text_body[0].text.split()) + '.jpg'
+                    item_name = ' '.join(text_body[0].text.replace('/', '').replace('\\', '').split()) + '.jpg'
                 else:
                     item_name = item_url.split('/')[-1]
                 image_list.append({'name': item_name, 'url': item_url})
