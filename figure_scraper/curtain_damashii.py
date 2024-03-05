@@ -160,40 +160,52 @@ class CurtainDamashii(Website):
         try:
             soup = cls.get_soup(event_url)
             h2 = soup.find('h2', class_='anime-title')
-            if h2 is None or not h2.has_attr('id'):
-                print("[INFO] Event %s can't be processed." % event)
-                return
-
             max_processes = constants.MAX_PROCESSES
             if max_processes <= 0:
                 max_processes = 1
-            with Pool(max_processes) as p:
-                results = []
-                next_tag = h2.next_sibling
-                series = h2['id']
-                product_ids = []
-                while next_tag.next_sibling:
-                    if next_tag.name == 'div' and next_tag.has_attr('class') and 'itemListBox' in next_tag['class']:
-                        a_tag = next_tag.find('a')
-                        if a_tag and a_tag.has_attr('href'):
-                            product_url = a_tag['href']
-                            if product_url[-1] == '/':
-                                product_id = product_url.split('/')[-2]
-                            else:
-                                product_id = product_url.split('/')[-1]
-                            product_ids.append(product_id)
-                    elif next_tag.name == 'h2':
+            if h2 is not None and h2.has_attr('id'):
+                with Pool(max_processes) as p:
+                    results = []
+                    next_tag = h2.next_sibling
+                    product_ids = []
+                    series = h2['id']
+                    while next_tag.next_sibling:
+                        if next_tag.name == 'div' and next_tag.has_attr('class') and 'itemListBox' in next_tag['class']:
+                            a_tag = next_tag.find('a')
+                            if a_tag and a_tag.has_attr('href'):
+                                product_url = a_tag['href']
+                                if product_url[-1] == '/':
+                                    product_id = product_url.split('/')[-2]
+                                else:
+                                    product_id = product_url.split('/')[-1]
+                                product_ids.append(product_id)
+                        elif next_tag.name == 'h2':
+                            result = p.apply_async(cls.process_event_page_by_series, (event, series, product_ids))
+                            results.append(result)
+                            if next_tag.has_attr('id'):
+                                series = next_tag['id']
+                            product_ids = []
+                        next_tag = next_tag.next_sibling
+                    if len(product_ids) > 0:
                         result = p.apply_async(cls.process_event_page_by_series, (event, series, product_ids))
                         results.append(result)
-                        if next_tag.has_attr('id'):
-                            series = next_tag['id']
-                        product_ids = []
-                    next_tag = next_tag.next_sibling
-                if len(product_ids) > 0:
-                    result = p.apply_async(cls.process_event_page_by_series, (event, series, product_ids))
-                    results.append(result)
-                for result in results:
-                    result.wait()
+                    for result in results:
+                        result.wait()
+            else:
+                a_tags = soup.select('.itemListBox a[href]')
+                if max_processes > 10:
+                    max_processes = 10
+                with Pool(max_processes) as p:
+                    results = []
+                    for a_tag in a_tags:
+                        if a_tag['href'][-1] == '/':
+                            product_id = a_tag['href'].split('/')[-2]
+                        else:
+                            product_id = a_tag['href'].split('/')[-1]
+                        result = p.apply_async(cls.process_event_page_by_series, (event, None, [product_id]))
+                        results.append(result)
+                    for result in results:
+                        result.wait()
             print('[INFO] Event %s has been processed' % event)
         except Exception as e:
             print('[ERROR] Error in processing %s' % event)
@@ -202,5 +214,8 @@ class CurtainDamashii(Website):
     @classmethod
     def process_event_page_by_series(cls, event, series, product_ids):
         for product_id in product_ids:
-            save_folder = '%s/%s/%s' % (constants.SUBFOLDER_CURTAIN_DAMASHII_EVENT, event, series)
+            if series is None:
+                save_folder = '%s/%s' % (constants.SUBFOLDER_CURTAIN_DAMASHII_EVENT, event)
+            else:
+                save_folder = '%s/%s/%s' % (constants.SUBFOLDER_CURTAIN_DAMASHII_EVENT, event, series)
             cls.process_product_page(product_id, save_folder)
