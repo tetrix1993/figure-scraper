@@ -5,9 +5,11 @@ import figure_scraper.constants as constants
 class Goodsmile(Website):
     base_folder = constants.FOLDER_GOODSMILE
     title = constants.WEBSITE_TITLE_GOODSMILE
-    keywords = ["https://www.goodsmile.info/"]
+    keywords = ["https://www.goodsmile.info/", "https://www.goodsmile.com/"]
 
-    product_url_template = 'https://www.goodsmile.info/ja/product/%s/'
+    product_url_template_old = 'https://www.goodsmile.info/ja/product/%s/'
+    product_url_template = 'https://www.goodsmile.com/ja/product/%s'
+    prefix = 'https://www.goodsmile.com'
 
     @classmethod
     def run(cls):
@@ -22,6 +24,21 @@ class Goodsmile(Website):
     def process_product_page(cls, product_id):
         id_ = str(product_id)
         product_url = cls.product_url_template % id_
+        try:
+            soup = cls.get_soup(product_url)
+            images = soup.select('.c-photo-variable-grid__photo img[src]')
+            for i in range(len(images)):
+                image_url = cls.prefix + images[i]['src']
+                image_name = id_ + '_' + str(i + 1).zfill(2) + '.jpg'
+                cls.download_image(image_url, image_name)
+        except Exception as e:
+            print('[ERROR] Error in processing %s' % product_url)
+            print(e)
+
+    @classmethod
+    def process_product_page_old(cls, product_id):
+        id_ = str(product_id)
+        product_url = cls.product_url_template_old % id_
         try:
             soup = cls.get_soup(product_url)
             item_photos = soup.find('div', class_='itemPhotos')
