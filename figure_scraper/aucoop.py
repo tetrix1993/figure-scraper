@@ -10,7 +10,7 @@ class Aucoop(Website):
     keywords = ["https://au-coop.jp/", "Aucoop", "Anime University COOP"]
 
     page_prefix = 'https://au-coop.jp'
-    product_url_prefix = page_prefix + '/collections/all/products/'
+    product_url_prefix = page_prefix + '/collections/'
     maximum_processes = constants.MAX_PROCESSES
 
     @classmethod
@@ -23,7 +23,7 @@ class Aucoop(Website):
 
     @classmethod
     def download_by_product_id(cls):
-        print('[INFO] URL is in the form: https://au-coop.jp/collections/all/products/{pattern}')
+        print('[INFO] URL is in the form: https://au-coop.jp/collections/{pattern}')
         pattern = input('Enter pattern: ')
         if len(pattern) == 0:
             return False
@@ -101,7 +101,7 @@ class Aucoop(Website):
                             image_name = image_name_prefix
                         if folder:
                             image_name = folder + '/' + image_name
-                        cls.download_image(image_url, image_name + '.jpg')
+                        cls.download_image(image_url, image_name + '.webp')
         except Exception as e:
             print('[ERROR] Error in processing %s' % product_url)
             print(e)
