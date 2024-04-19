@@ -79,6 +79,9 @@ class Medicos(Website):
                 if image and image.has_attr('src'):
                     # image_url = cls.product_url_prefix + image['src']
                     image_url = image['src']
+                    index = image_url.find('/html/')  # To get better color picture
+                    if index > 0:
+                        image_url = cls.product_url_prefix + image_url[index:]
                     if len(divs) == 1:
                         image_name = prefix + '.jpg'
                     else:
@@ -95,6 +98,15 @@ class Medicos(Website):
         span = soup.find('span', class_='product-code-default')
         if span and len(span.text.strip()) > 0:
             text = span.text.strip()
-            if '【JAN:' in text[0:5] and '】' in text[-1]:
-                return text.split('【JAN:')[1].split('】')[0]
+            index1 = text.find('【JAN:')
+            index2 = text.find('【BOXJAN:')
+            l_index = -1
+            if index1 >= 0:
+                l_index = index1 + 5
+            elif index2 >= 0:
+                l_index = index2 + 8
+            if l_index >= 0:
+                r_index = text.find('】')
+                if l_index < r_index:
+                    return text[l_index:r_index]
         return product_id
