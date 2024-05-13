@@ -1,6 +1,7 @@
 from figure_scraper.website import Website
 import figure_scraper.constants as constants
 from multiprocessing import Pool
+import requests
 
 
 class EeoStore(Website):
@@ -53,9 +54,11 @@ class EeoStore(Website):
             soup = cls.get_soup(product_url)
             jan = product_id
             if use_jan:
-                jan_tag = soup.select('span.product-code-default')
-                if len(jan_tag) > 0 and len(jan_tag[0].text.strip()) >= 13:
-                    jan = jan_tag[0].text.strip()
+                content = str(requests.get(product_url).content)
+                keyword = '"product_code":"'
+                index_1 = content.index(keyword)
+                index_2 = content[index_1 + len(keyword):].index('"') + index_1 + len(keyword)
+                jan = content[index_1 + len(keyword):index_2]
             images = soup.select('div.slide-item img')
             num_max_length = len(str(len(images)))
             for i in range(len(images)):
