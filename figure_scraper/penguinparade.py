@@ -7,11 +7,17 @@ class PenguinParade(Website):
     title = constants.WEBSITE_TITLE_PENGUINPARADE
     keywords = ["http://www.penguinparade.jp/"]
 
+    prefix = 'https://www.penguinparade.jp/shopdetail/'
     admin_id = 'ONME007018'
     image_name_template = '%s_%s.jpg'
     image_url_template = f'http://webftp1.makeshop.jp/shopimages/{admin_id}/%s_%s.jpg'
     product_url_template = 'http://www.penguinparade.jp/shopdetail/%s/'
     image_list_template = f'http://webftp1.makeshop.jp/addimg/viewimageiframeimg.html?adminuser={admin_id}&brandcode=%s&maxsize=400&multi_image_display_type=1'
+
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36',
+        'Host': 'www.penguinparade.jp'
+    }
 
     @classmethod
     def run(cls):
@@ -36,6 +42,22 @@ class PenguinParade(Website):
     def process_product_page_without_jan(cls, numbers, folder=None):
         for number in numbers:
             id_ = str(number).zfill(12)
+            try:
+                page_url = cls.prefix + id_
+                soup = cls.get_soup(page_url, headers=cls.headers)
+                images = soup.select('.M_imageWrap>div>a img[src]')
+                for image in images:
+                    image_url = image['src'].split('?')[0]
+                    if '/shopimages/' in image_url:
+                        image_name = image_url.split('/shopimages/')[1].replace('/', '_')
+                    else:
+                        image_name = image_url.split('/')[-1]
+                    cls.download_image(image_url, folder + '/' + image_name)
+            except Exception as e:
+                print('[ERROR] Error in processing %s' % id_)
+                print(e)
+
+            '''
             for i in range(99):
                 image_url = cls.image_url_template % (str(i), id_)
                 image_name = cls.image_name_template % (str(number), str(i))
@@ -46,25 +68,22 @@ class PenguinParade(Website):
                     if i == 0:
                         print('[INFO] Product ID %s not found.' % str(number))
                     break
+            '''
 
     @classmethod
     def process_product_page_with_jan(cls, numbers, folder=None):
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36',
-            'Host': 'www.penguinparade.jp'
-        }
         for number in numbers:
             id_ = str(number).zfill(12)
             product_url = cls.product_url_template % id_
             jan_codes = []
             image_count = 0
             try:
-                soup = cls.get_soup(product_url, headers=headers, decode=True, charset='EUC-JP')
+                soup = cls.get_soup(product_url, headers=cls.headers, decode=True, charset='EUC-JP')
                 if soup is not None:
                     items = soup.select('.detailTxt')
                     if len(items) > 0:
                         jan_codes = cls.get_jan_codes(items[0].contents[0].text)
-                img_soup = cls.get_soup(cls.image_list_template % id_, headers=headers, decode=True, charset='EUC-JP')
+                img_soup = cls.get_soup(cls.image_list_template % id_, headers=cls.headers, decode=True, charset='EUC-JP')
                 if img_soup is not None:
                     image_count = len(img_soup.select('img[src]'))
             except Exception as e:
