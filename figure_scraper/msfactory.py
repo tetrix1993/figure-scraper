@@ -245,9 +245,10 @@ class MSFactory(Website):
                                     continue
                                 image_urls.append(image['src'])
                         elif next_tag.name == 'h3':
-                            result = p.apply_async(cls.process_event_page_by_series, (event, series, image_urls))
-                            results.append(result)
-                            image_urls = []
+                            if len(image_urls) > 0:
+                                result = p.apply_async(cls.process_event_page_by_series, (event, series, image_urls))
+                                results.append(result)
+                                image_urls = []
                             a_tag = next_tag.find('a')
                             if a_tag is not None:
                                 series = a_tag['id']
