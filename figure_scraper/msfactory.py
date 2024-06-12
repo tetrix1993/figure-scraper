@@ -22,6 +22,7 @@ class MSFactory(Website):
             print('1: Download by Product ID')
             print('2: Download by Categories')
             print('3: Download Items from Main Page')
+            print('4: Download from Event')
             print('0: Return')
 
             try:
@@ -32,6 +33,8 @@ class MSFactory(Website):
                     cls.download_by_categories()
                 elif choice == 3:
                     cls.download_from_main_page()
+                elif choice == 4:
+                    cls.download_event_page()
                 elif choice == 0:
                     return
                 else:
@@ -213,3 +216,57 @@ class MSFactory(Website):
             if len(text) > 14 and text[0] == '【':
                 result = text[1:14]
         return result
+
+    @classmethod
+    def download_event_page(cls):
+        event = input('Enter event id (e.g. c103 in https://ms-factory.net/c103/): ')
+        if len(event) == 0:
+            return
+        url = f'https://ms-factory.net/{event}/'
+        try:
+            soup = cls.get_soup(url)
+            h3 = soup.find('h3')
+            max_processes = constants.MAX_PROCESSES
+            if max_processes <= 0:
+                max_processes = 1
+            if h3 is not None:
+                with Pool(max_processes) as p:
+                    results = []
+                    a_tag = h3.find('a')
+                    series = a_tag['id']
+                    next_tag = h3.next_sibling
+                    image_urls = []
+                    while next_tag.next_sibling:
+                        if next_tag.name == 'table':
+                            images = next_tag.select('img[src]')
+                            for image in images:
+                                image_url = cls.clear_resize_in_url(image['src'])
+                                if image_url.endswith('.gif') or image_url.endswith('mf.jpg'):
+                                    continue
+                                image_urls.append(image['src'])
+                        elif next_tag.name == 'h3':
+                            result = p.apply_async(cls.process_event_page_by_series, (event, series, image_urls))
+                            results.append(result)
+                            image_urls = []
+                            a_tag = next_tag.find('a')
+                            if a_tag is not None:
+                                series = a_tag['id']
+                            else:
+                                break
+                        next_tag = next_tag.next_sibling
+                    if len(image_urls) > 0:
+                        result = p.apply_async(cls.process_event_page_by_series, (event, series, image_urls))
+                        results.append(result)
+                    for result in results:
+                        result.wait()
+            print('[INFO] Event %s has been processed' % event)
+        except Exception as e:
+            print('[ERROR] Error in processing %s' % url)
+            print(e)
+
+    @classmethod
+    def process_event_page_by_series(cls, event, series, image_urls):
+        folder = '%s/%s/%s' % (constants.SUBFOLDER_CURTAIN_DAMASHII_EVENT, event, series)
+        for image_url in image_urls:
+            image_name = folder + '/' + image_url.split('/')[-1]
+            cls.download_image(image_url, image_name, try_count=1)
