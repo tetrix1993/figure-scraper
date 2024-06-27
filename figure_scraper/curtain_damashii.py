@@ -159,6 +159,41 @@ class CurtainDamashii(Website):
         event_url = cls.event_url_template % event
         try:
             soup = cls.get_soup(event_url)
+            divs = soup.select('.clearfix')
+            max_processes = constants.MAX_PROCESSES
+            if max_processes <= 0:
+                max_processes = 1
+            with Pool(max_processes) as p:
+                results = []
+                for div in divs:
+                    title_tag = div.select('.anime-title[id]')
+                    if len(title_tag) == 0:
+                        continue
+                    series = title_tag[0]['id']
+                    items = div.select('.itemListBox a[href][target="_blank"]')
+                    product_ids = []
+                    for item in items:
+                        product_url = item['href']
+                        if product_url[-1] == '/':
+                            product_id = product_url.split('/')[-2]
+                        else:
+                            product_id = product_url.split('/')[-1]
+                        product_ids.append(product_id)
+                    if len(product_ids) > 0:
+                        result = p.apply_async(cls.process_event_page_by_series, (event, series, product_ids))
+                        results.append(result)
+                for result in results:
+                    result.wait()
+            print('[INFO] Event %s has been processed' % event)
+        except Exception as e:
+            print('[ERROR] Error in processing %s' % event)
+            print(e)
+
+    @classmethod
+    def process_event_page_old(cls, event):
+        event_url = cls.event_url_template % event
+        try:
+            soup = cls.get_soup(event_url)
             h2 = soup.find('h2', class_='anime-title')
             max_processes = constants.MAX_PROCESSES
             if max_processes <= 0:
