@@ -167,21 +167,30 @@ class CurtainDamashii(Website):
                 results = []
                 for div in divs:
                     title_tag = div.select('.anime-title[id]')
-                    if len(title_tag) == 0:
-                        continue
-                    series = title_tag[0]['id']
-                    items = div.select('.itemListBox a[href][target="_blank"]')
-                    product_ids = []
-                    for item in items:
-                        product_url = item['href']
-                        if product_url[-1] == '/':
-                            product_id = product_url.split('/')[-2]
-                        else:
-                            product_id = product_url.split('/')[-1]
-                        product_ids.append(product_id)
-                    if len(product_ids) > 0:
-                        result = p.apply_async(cls.process_event_page_by_series, (event, series, product_ids))
-                        results.append(result)
+                    if len(title_tag) > 0:
+                        series = title_tag[0]['id']
+                        items = div.select('.itemListBox a[href][target="_blank"]')
+                        product_ids = []
+                        for item in items:
+                            product_url = item['href']
+                            if product_url[-1] == '/':
+                                product_id = product_url.split('/')[-2]
+                            else:
+                                product_id = product_url.split('/')[-1]
+                            product_ids.append(product_id)
+                        if len(product_ids) > 0:
+                            result = p.apply_async(cls.process_event_page_by_series, (event, series, product_ids))
+                            results.append(result)
+                    else:
+                        a_tags = soup.select('.itemListBox a[href]')
+                        for a_tag in a_tags:
+                            if a_tag['href'][-1] == '/':
+                                product_id = a_tag['href'].split('/')[-2]
+                            else:
+                                product_id = a_tag['href'].split('/')[-1]
+                            result = p.apply_async(cls.process_event_page_by_series, (event, None, [product_id]))
+                            results.append(result)
+                        break
                 for result in results:
                     result.wait()
             print('[INFO] Event %s has been processed' % event)
