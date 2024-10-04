@@ -10,12 +10,34 @@ class Gamers(Website):
     keywords = ['https://www.gamers.co.jp/']
 
     product_url_template = 'https://www.gamers.co.jp/pn/pd/%s/'
+    event_url_template = 'https://www.gamers.co.jp/contents/event_fair/detail.php?id=%s'
 
     @classmethod
     def run(cls):
         cls.init()
         while True:
             print('[INFO] %s Scraper' % cls.title)
+            print('[INFO] Select an option: ')
+            print('1: Download by Product ID')
+            print('2: Download by Event ID')
+            print('0: Return')
+
+            try:
+                choice = int(input('[INFO] Enter choice: '))
+                if choice == 1:
+                    cls.download_by_product_id()
+                elif choice == 2:
+                    cls.download_by_event()
+                elif choice == 0:
+                    return
+                else:
+                    raise Exception
+            except:
+                print('[ERROR] Invalid option.')
+
+    @classmethod
+    def download_by_product_id(cls):
+        while True:
             print('[INFO] Product Page URL is in the format: https://www.gamers.co.jp/pn/pd/{product_id}/')
             expr = input('Enter expression (Product IDs): ').strip()
             if len(expr) == 0:
@@ -105,6 +127,33 @@ class Gamers(Website):
                             results.append(result)
                         for result in results:
                             result.wait()
+
+    @classmethod
+    def download_by_event(cls):
+        while True:
+            print('[INFO] Event URL is in the format: https://www.gamers.co.jp/contents/event_fair/detail.php?id={event_id}')
+            event_id = input('Enter Event ID: ')
+            if len(event_id.strip()) == 0:
+                return
+            folder = constants.SUBFOLDER_GAMERS_EVENT + '/' + event_id
+            if not os.path.exists(folder):
+                os.makedirs(folder)
+            event_url = cls.event_url_template % event_id
+            print('Processing ' + event_url)
+            try:
+                soup = cls.get_soup(event_url)
+                images = soup.select('.fairevent_img img[src],.fairevent_detail_content img[src]')
+                for image in images:
+                    image_url = image['src']
+                    if 'resize_image.php?image=' in image_url:
+                        image_url = 'https://www.gamers.co.jp/upload/save_image/' + image_url.split('?image=')[-1]
+                    elif image_url.startswith('/'):
+                        image_url = 'https://www.gamers.co.jp' + image_url
+                    image_name = image_url.split('/')[-1]
+                    cls.download_image(image_url, 'event/' + event_id + '/' + image_name)
+            except Exception as e:
+                print('[ERROR] Error in processing %s' % event_url)
+                print(e)
 
     @classmethod
     def process_product_page(cls, product_id, use_jan=False, folder=None):
