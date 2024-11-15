@@ -189,11 +189,16 @@ class Gamers(Website):
     @staticmethod
     def get_jan_code(soup):
         result = ''
-        a_tag = soup.find('a', id='opener')
-        if a_tag:
-            text = a_tag.text.strip()
-            if len(text) > 12:
-                result = a_tag.text.strip()[-13:]
+        p_tags = soup.select('.item_detail_txt.pc p')
+        if len(p_tags) > 0:
+            content = p_tags[0].text
+            stop = False
+            for i in content:
+                if i.isnumeric():
+                    result += i
+                    stop = True
+                elif stop:
+                    break
         return result
 
     @staticmethod
