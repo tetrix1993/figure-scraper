@@ -10,7 +10,7 @@ class Aucoop(Website):
     keywords = ["https://au-coop.jp/", "Aucoop", "Anime University COOP"]
 
     page_prefix = 'https://au-coop.jp'
-    product_url_prefix = page_prefix + '/collections/'
+    product_url_prefix = page_prefix + '/products/'
     maximum_processes = constants.MAX_PROCESSES
 
     @classmethod
@@ -23,7 +23,7 @@ class Aucoop(Website):
 
     @classmethod
     def download_by_product_id(cls):
-        print('[INFO] URL is in the form: https://au-coop.jp/collections/{pattern}')
+        print('[INFO] URL is in the form: https://au-coop.jp/products/{pattern}')
         pattern = input('Enter pattern: ')
         if len(pattern) == 0:
             return False
