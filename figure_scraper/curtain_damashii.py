@@ -163,9 +163,12 @@ class CurtainDamashii(Website):
             max_processes = constants.MAX_PROCESSES
             if max_processes <= 0:
                 max_processes = 1
+            has_anime_title = len(soup.select('.anime-title[id]')) > 0
             with Pool(max_processes) as p:
                 results = []
                 for div in divs:
+                    if has_anime_title and (len(div['class']) > 1 or div.has_attr('id')):
+                        continue
                     title_tag = div.select('.anime-title[id]')
                     if len(title_tag) > 0:
                         series = title_tag[0]['id']
@@ -181,7 +184,7 @@ class CurtainDamashii(Website):
                         if len(product_ids) > 0:
                             result = p.apply_async(cls.process_event_page_by_series, (event, series, product_ids))
                             results.append(result)
-                    else:
+                    elif not has_anime_title:
                         a_tags = soup.select('.itemListBox a[href]')
                         for a_tag in a_tags:
                             if a_tag['href'][-1] == '/':
