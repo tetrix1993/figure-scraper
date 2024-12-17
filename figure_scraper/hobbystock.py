@@ -56,20 +56,22 @@ class HobbyStock(Website):
         product_url = cls.product_url_template % id_
         try:
             soup = cls.get_soup(product_url)
-            div = soup.find('div', class_='imageList')
-            if div:
-                images = div.find_all('img')
-                num_max_length = len(str(len(images)))
-                for i in range(len(images)):
-                    if images[i].has_attr('src'):
-                        image_url = images[i]['src']
-                        if len(images) == 1:
-                            image_name = id_ + '.jpg'
-                        else:
-                            image_name = '%s_%s.jpg' % (id_, str(i + 1).zfill(num_max_length))
-                        if folder:
-                            image_name = folder + '/' + image_name
-                        cls.download_image(image_url, image_name)
+            images = soup.select('.productMainBox__left img[src]')
+            image_urls = set()
+            for image in images:
+                image_urls.add(image['src'].split('?')[0])
+            if len(image_urls) > 0:
+                num_max_length = len(str(len(image_urls)))
+                i = 0
+                for image_url in image_urls:
+                    i += 1
+                    if len(image_urls) == 1:
+                        image_name = id_ + '.jpg'
+                    else:
+                        image_name = '%s_%s.jpg' % (id_, str(i).zfill(num_max_length))
+                    if folder:
+                        image_name = folder + '/' + image_name
+                    cls.download_image(image_url, image_name)
             else:
                 print('[ERROR] Product ID %s does not exists.' % id_)
                 return
