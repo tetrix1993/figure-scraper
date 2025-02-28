@@ -64,7 +64,8 @@ class CurtainDamashii(Website):
         if len(valid_tags) == 0:
             return
         elif len(valid_tags) == 1:
-            cls.process_tag_page(valid_tags[0], constants.SUBFOLDER_CURTAIN_DAMASHII_TAG)
+            last_item_to_process = input('Enter last item ID to process (leave blank if not needed): ')
+            cls.process_tag_page(valid_tags[0], constants.SUBFOLDER_CURTAIN_DAMASHII_TAG, last_item_to_process)
         else:
             cls.process_tag_pages(valid_tags)
 
@@ -119,7 +120,7 @@ class CurtainDamashii(Website):
             print(e)
 
     @classmethod
-    def process_tag_page(cls, tag, folder):
+    def process_tag_page(cls, tag, folder, last_item_to_process):
         tag_url = cls.tag_url_template % tag
         try:
             soup = cls.get_soup(tag_url)
@@ -137,6 +138,8 @@ class CurtainDamashii(Website):
                         product_id = product_url.split('/')[-1]
                     save_folder = folder + '/' + tag
                     cls.process_product_page(product_id, save_folder)
+                    if last_item_to_process == product_id:
+                        break
             print('[INFO] Tag %s has been processed.' % tag)
         except Exception as e:
             print('[ERROR] Error in processing %s' % tag)
