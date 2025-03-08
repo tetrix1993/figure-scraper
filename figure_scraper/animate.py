@@ -139,9 +139,9 @@ class Animate(Website):
 
     @staticmethod
     def get_jan_code(soup):
-        a_tag = soup.find('a', id='opener')
-        if a_tag:
-            return a_tag.text.strip()
+        a_tag = soup.select('.barcode_popup p')
+        if len(a_tag) > 0:
+            return a_tag[0].text.replace('JANコード：', '').strip()
         else:
             return ''
 
