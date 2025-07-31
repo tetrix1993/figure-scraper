@@ -273,15 +273,22 @@ class HobbyStock(Website):
     def get_jan_code(soup):
         content = soup.select('meta[name="keywords"][content]')
         if len(content) > 0:
-            return content[0]['content'].split(',')[1].strip()
-        else:
-            return ''
+            for c in content[0]['content'].split(','):
+                text = c.strip()
+                if text.isnumeric() and len(text) == 13 and (text.startswith('45') or text.startswith('49')):
+                    return text
+        return ''
 
     @staticmethod
     def get_title_and_code(soup):
         content = soup.select('meta[name="keywords"][content]')
         if len(content) > 0:
             split_ = content[0]['content'].split(',')
-            return split_[0].strip(), split_[1].strip()
-        else:
-            return '', ''
+            for i in range(len(split_)):
+                text = split_[i].strip()
+                if text.isnumeric() and len(text) == 13 and (text.startswith('45') or text.startswith('49')):
+                    title = ''
+                    for j in range(i):
+                        title += split_[j]
+                    return title, text
+        return '', ''
