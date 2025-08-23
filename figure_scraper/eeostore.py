@@ -59,7 +59,7 @@ class EeoStore(Website):
                 index_1 = content.index(keyword)
                 index_2 = content[index_1 + len(keyword):].index('"') + index_1 + len(keyword)
                 jan = content[index_1 + len(keyword):index_2]
-            images = soup.select('div.swiper-slide img')
+            images = soup.select('div.shouhinshousai-slide img')
             num_max_length = len(str(len(images)))
             for i in range(len(images)):
                 image_url = cls.page_prefix + images[i]['src']
