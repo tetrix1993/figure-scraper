@@ -3,8 +3,12 @@ import re
 import requests
 import time
 import figure_scraper.constants as constants
+import urllib3.exceptions
 from bs4 import BeautifulSoup as bs
 from datetime import datetime
+
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 class Website:
@@ -73,16 +77,16 @@ class Website:
             return os.path.exists(cls.base_folder + '/' + filename)
 
     @staticmethod
-    def get_soup(url, headers=None, decode=False, charset='utf-8', cookies=None, get_text=False):
+    def get_soup(url, headers=None, decode=False, charset='utf-8', cookies=None, get_text=False, verify=True):
         if headers is None:
             headers = constants.HTTP_HEADER_USER_AGENT
         if charset:
             headers['Content-Type'] = 'text/html; charset=' + charset
         try:
             if cookies:
-                result = requests.get(url, headers=headers, cookies=cookies)
+                result = requests.get(url, headers=headers, cookies=cookies, verify=verify)
             else:
-                result = requests.get(url, headers=headers)
+                result = requests.get(url, headers=headers, verify=verify)
             if get_text:
                 return bs(str(result.text), 'html.parser')
             if decode:
