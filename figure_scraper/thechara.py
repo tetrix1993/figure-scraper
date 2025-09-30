@@ -21,10 +21,11 @@ class TheChara(Website):
             if len(expr) == 0:
                 return
 
-            cls.process_product_page(expr)
+            use_jan = input('Use JAN code as name if possible? (y/n): ')
+            cls.process_product_page(expr, use_jan)
 
     @classmethod
-    def process_product_page(cls, page):
+    def process_product_page(cls, page, use_jan):
         page_url = cls.search_url_template % page
         headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'}
         pageno = 1
@@ -33,13 +34,25 @@ class TheChara(Website):
                 if pageno > 1:
                     page_url = cls.search_pageno_template % (pageno, page)
                 soup = cls.get_soup(page_url, headers=headers)
-                images = soup.select('.p-itemCard__thumb img[src]')
-                if len(images) == 0:
+                a_tags = soup.select('a.p-itemCard__link[href]')
+                if len(a_tags) == 0:
                     print(f'[ERROR] {page_url} does not exists.')
                     return
-                for image in images:
-                    image_url = image['src']
+                for a_tag in a_tags:
+                    image = a_tag.select('.p-itemCard__thumb img[src]')
+                    if len(image) == 0:
+                        continue
+                    image_url = image[0]['src']
                     image_name = image_url.split('/')[-1]
+                    if use_jan.lower() == 'y':
+                        page_soup = cls.get_soup(cls.url_prefix + a_tag['href'][1:])
+                        if page_soup is not None:
+                            code_tags = page_soup.select('.p-detail__code')
+                            for code_tag in code_tags:
+                                split1_ = code_tag.text.split('_')  # JAN code
+                                if len(split1_) > 1:
+                                    image_name = split1_[1] + '.jpg'
+                                    break
                     cls.download_image(image_url, page + '/' + image_name)
                 page_elems = soup.select('.p-pagination__item a[href]')
                 has_next_page = False
