@@ -152,6 +152,10 @@ class Website:
                     return []
             else:
                 return []
+        if len(results) > 30:
+            in_ = input(f'[WARNING] {str(len(results))} items will be loaded. Enter Y to proceed. ')
+            if in_.upper() != 'Y':
+                results = []
         return results
 
     @classmethod

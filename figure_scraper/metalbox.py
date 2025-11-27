@@ -15,6 +15,7 @@ class MetalBox(Website):
     @classmethod
     def run(cls):
         cls.init()
+        print('[INFO] %s Scraper' % cls.title)
         cls.process_by_product_id()
 
         '''
