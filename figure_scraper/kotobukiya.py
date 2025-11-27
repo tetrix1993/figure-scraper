@@ -33,7 +33,7 @@ class Kotobukiya(Website):
             if len(numbers) == 1:
                 cls.process_product_page(numbers[0])
             elif len(numbers) > 1:
-                max_processes = min(constants.MAX_PROCESSES, len(numbers))
+                max_processes = min(cls.max_processes, len(numbers))
                 if max_processes <= 0:
                     max_processes = 1
                 with Pool(max_processes) as p:

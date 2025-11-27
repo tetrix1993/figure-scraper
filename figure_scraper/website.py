@@ -1,3 +1,4 @@
+import json
 import os
 import re
 import requests
@@ -14,13 +15,31 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 class Website:
     base_folder = constants.FOLDER_BASE
     title = constants.WEBSITE_TITLE_BASE
+    max_processes = constants.MAX_PROCESSES
+    config_loaded = False
     keywords = []
 
     @classmethod
     def init(cls):
-        pass
-        #if not os.path.exists(cls.base_folder):
-        #    os.makedirs(cls.base_folder)
+        cls.get_config()
+
+    @classmethod
+    def get_config(cls):
+        if not cls.config_loaded and os.path.exists(constants.CONFIG_FILEPATH):
+            try:
+                with open(constants.CONFIG_FILEPATH) as f:
+                    obj = json.loads(f.read())
+                    if cls.__name__ in obj:
+                        obj_ = obj[cls.__name__]
+                        #if 'base_folder' in obj_:
+                        #    cls.base_folder = obj_['base_folder']
+                        #if 'title' in obj_:
+                        #    cls.base_folder = obj_['title']
+                        if 'max_processes' in obj_:
+                            cls.max_processes = obj_['max_processes']
+                    cls.config_loaded = True
+            except:
+                pass
 
     @classmethod
     def download_image(cls, url, filename, print_error_message=True, headers=None, try_count=None):

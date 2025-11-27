@@ -25,7 +25,7 @@ class UnionCreative(Website):
             elif len(numbers) == 1:
                 cls.process_image_id(numbers[0])
             else:
-                max_processes = min(constants.MAX_PROCESSES, len(numbers))
+                max_processes = min(cls.max_processes, len(numbers))
                 if max_processes <= 0:
                     max_processes = 1
                 with Pool(max_processes) as p:

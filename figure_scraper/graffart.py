@@ -57,7 +57,7 @@ class GraffArt(Website):
         if len(product_ids) == 1:
             cls.process_product_page(str(product_ids[0]), folder)
         else:
-            max_processes = min(constants.MAX_PROCESSES, len(product_ids))
+            max_processes = min(cls.max_processes, len(product_ids))
             if max_processes <= 0:
                 max_processes = 1
             with Pool(max_processes) as p:
@@ -110,7 +110,7 @@ class GraffArt(Website):
         if len(group_ids) == 1:
             cls.process_group_page(group_ids[0], use_jan)
         else:
-            max_processes = min(constants.MAX_PROCESSES, len(group_ids))
+            max_processes = min(cls.max_processes, len(group_ids))
             if max_processes <= 0:
                 max_processes = 1
             with Pool(max_processes) as p:
@@ -149,7 +149,7 @@ class GraffArt(Website):
 
     @classmethod
     def process_group_pages(cls, group_ids, use_jan=False):
-        max_processes = constants.MAX_PROCESSES
+        max_processes = cls.max_processes
         if max_processes <= 0:
             max_processes = 1
         with Pool(max_processes) as p:
@@ -218,7 +218,7 @@ class GraffArt(Website):
             div = soup.find('div', id='box_group')
             if div:
                 a_tags = div.find_all('a')
-                max_processes = min(constants.MAX_PROCESSES, len(a_tags))
+                max_processes = min(cls.max_processes, len(a_tags))
                 if max_processes <= 0:
                     max_processes = 1
                 gids = []

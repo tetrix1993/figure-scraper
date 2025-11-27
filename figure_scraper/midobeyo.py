@@ -99,7 +99,7 @@ class Midobeyo(Website):
                     if len(numbers) == 1:
                         cls.scan_product_page(numbers[0])
                     else:
-                        max_processes = min(constants.MAX_PROCESSES, len(numbers))
+                        max_processes = min(cls.max_processes, len(numbers))
                         if max_processes <= 0:
                             max_processes = 1
                         with Pool(max_processes) as p:
@@ -134,7 +134,7 @@ class Midobeyo(Website):
                     if len(numbers) == 1:
                         cls.process_product_page(numbers[0], use_jan, today)
                     else:
-                        max_processes = min(constants.MAX_PROCESSES, len(numbers))
+                        max_processes = min(cls.max_processes, len(numbers))
                         if max_processes <= 0:
                             max_processes = 1
                         with Pool(max_processes) as p:

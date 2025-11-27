@@ -47,7 +47,7 @@ class Crux(Website):
         if len(numbers) == 1:
             cls.process_product_page(numbers[0], constants.SUBFOLDER_CRUX_IMAGES)
         elif len(numbers) > 1:
-            max_processes = min(constants.MAX_PROCESSES, len(numbers))
+            max_processes = min(cls.max_processes, len(numbers))
             if max_processes <= 0:
                 max_processes = 1
             with Pool(max_processes) as p:
@@ -74,7 +74,7 @@ class Crux(Website):
 
     @classmethod
     def process_category_pages(cls, prefix, category_ids):
-        max_processes = constants.MAX_PROCESSES
+        max_processes = cls.max_processes
         if max_processes <= 0:
             max_processes = 1
         with Pool(max_processes) as p:

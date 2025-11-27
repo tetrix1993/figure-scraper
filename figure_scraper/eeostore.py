@@ -35,7 +35,7 @@ class EeoStore(Website):
             use_jan = True
 
         today = cls.get_today_date()
-        max_processes = min(constants.MAX_PROCESSES, len(product_ids))
+        max_processes = min(cls.max_processes, len(product_ids))
         if max_processes <= 0:
             max_processes = 1
         with Pool(max_processes) as p:

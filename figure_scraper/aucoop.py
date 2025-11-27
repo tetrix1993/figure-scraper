@@ -11,7 +11,6 @@ class Aucoop(Website):
 
     page_prefix = 'https://au-coop.jp'
     product_url_prefix = page_prefix + '/products/'
-    maximum_processes = constants.MAX_PROCESSES
 
     @classmethod
     def run(cls):
@@ -62,7 +61,7 @@ class Aucoop(Website):
         if len(product_ids) == 1:
             cls.process_product_page(product_ids[0], use_jan, today)
         else:
-            max_processes = min(cls.maximum_processes, len(product_ids))
+            max_processes = min(cls.max_processes, len(product_ids))
             if max_processes <= 0:
                 max_processes = 1
             with Pool(max_processes) as p:

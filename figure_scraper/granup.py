@@ -60,7 +60,7 @@ class Granup(Website):
         if len(product_ids) == 1:
             cls.process_product_page(str(product_ids[0]), folder, use_jan)
         elif len(product_ids) > 1:
-            max_processes = min(constants.MAX_PROCESSES, len(product_ids))
+            max_processes = min(cls.max_processes, len(product_ids))
             if max_processes <= 0:
                 max_processes = 1
             with Pool(max_processes) as p:
@@ -105,7 +105,7 @@ class Granup(Website):
                 folder = base_folder + '/' + str(categories[0])
                 cls.process_product_pages(product_ids, folder, use_jan)
         else:
-            max_processes = constants.MAX_PROCESSES
+            max_processes = cls.max_processes
             if max_processes <= 0:
                 max_processes = 1
             with Pool(max_processes) as p:
@@ -149,7 +149,7 @@ class Granup(Website):
             else:
                 cls.process_product_pages(product_ids, folder, use_jan)
         else:
-            max_processes = constants.MAX_PROCESSES
+            max_processes = cls.max_processes
             if max_processes <= 0:
                 max_processes = 1
             with Pool(max_processes) as p:

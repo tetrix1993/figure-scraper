@@ -57,7 +57,7 @@ class Cocollabo(Website):
         elif len(final_product_ids) == 1:
             cls.process_product_page(final_product_ids[0], folder)
         else:
-            max_processes = min(constants.MAX_PROCESSES, len(final_product_ids))
+            max_processes = min(cls.max_processes, len(final_product_ids))
             if max_processes <= 0:
                 max_processes = 1
             with Pool(max_processes) as p:
@@ -130,7 +130,7 @@ class Cocollabo(Website):
                 if len(product_ids) == 1:
                     cls.process_product_page(product_ids[0], folder)
                 elif len(product_ids) > 0:
-                    max_processes = constants.MAX_PROCESSES
+                    max_processes = cls.max_processes
                     if max_processes <= 0:
                         max_processes = 1
                     with Pool(max_processes) as p:

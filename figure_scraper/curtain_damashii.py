@@ -150,7 +150,7 @@ class CurtainDamashii(Website):
         if len(tags) == 1:
             cls.process_tag_page(tags[0], constants.SUBFOLDER_CURTAIN_DAMASHII_TAG)
         elif len(tags) > 0:
-            max_processes = min(constants.MAX_PROCESSES, len(tags))
+            max_processes = min(cls.max_processes, len(tags))
             if max_processes <= 0:
                 max_processes = 1
             with Pool(max_processes) as p:
@@ -168,7 +168,7 @@ class CurtainDamashii(Website):
         try:
             soup = cls.get_soup(event_url)
             divs = soup.select('.clearfix')
-            max_processes = constants.MAX_PROCESSES
+            max_processes = cls.max_processes
             if max_processes <= 0:
                 max_processes = 1
             has_anime_title = len(soup.select('.anime-title[id]')) > 0
@@ -215,7 +215,7 @@ class CurtainDamashii(Website):
         try:
             soup = cls.get_soup(event_url)
             h2 = soup.find('h2', class_='anime-title')
-            max_processes = constants.MAX_PROCESSES
+            max_processes = cls.max_processes
             if max_processes <= 0:
                 max_processes = 1
             if h2 is not None and h2.has_attr('id'):

@@ -98,7 +98,7 @@ class MSFactory(Website):
                 folder = base_folder + '/' + categories[0]
                 cls.process_product_pages(product_ids, folder, use_jan)
         else:
-            max_processes = constants.MAX_PROCESSES
+            max_processes = cls.max_processes
             if max_processes <= 0:
                 max_processes = 1
             with Pool(max_processes) as p:
@@ -142,7 +142,7 @@ class MSFactory(Website):
             else:
                 cls.process_product_pages(product_ids, folder, use_jan)
         else:
-            max_processes = constants.MAX_PROCESSES
+            max_processes = cls.max_processes
             if max_processes <= 0:
                 max_processes = 1
             with Pool(max_processes) as p:
@@ -226,7 +226,7 @@ class MSFactory(Website):
         try:
             soup = cls.get_soup(url)
             h3 = soup.find('h3')
-            max_processes = constants.MAX_PROCESSES
+            max_processes = cls.max_processes
             if max_processes <= 0:
                 max_processes = 1
             if h3 is not None:

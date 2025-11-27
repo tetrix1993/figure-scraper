@@ -1,0 +1,196 @@
+{
+  "Alter": {
+    "base_folder": "download/alter",
+    "title": "Alter"
+  },
+  "Amakuni": {
+    "base_folder": "download/amakuni",
+    "title": "Amakuni"
+  },
+  "AmiAmi": {
+    "base_folder": "download/amiami",
+    "title": "AmiAmi"
+  },
+  "Amnibus": {
+    "base_folder": "download/amnibus",
+    "title": "Amnibus"
+  },
+  "Animaru": {
+    "base_folder": "download/animaru",
+    "title": "Animaru"
+  },
+  "Animate": {
+    "base_folder": "download/animate",
+    "title": "Animate"
+  },
+  "Aucoop": {
+    "base_folder": "download/aucoop",
+    "title": "Anime University COOP"
+  },
+  "AniplexPlus": {
+    "base_folder": "download/aniplexplus",
+    "title": "Aniplex+"
+  },
+  "BellHouse": {
+    "base_folder": "download/bellhouse",
+    "title": "Bell House"
+  },
+  "CharaSupply": {
+    "base_folder": "download/charasupply",
+    "title": "Chara Supply"
+  },
+  "Cocollabo": {
+    "base_folder": "download/cocollabo",
+    "title": "Cocollabo"
+  },
+  "Cospa": {
+    "base_folder": "download/cospa",
+    "title": "Cospa"
+  },
+  "Crux": {
+    "base_folder": "download/crux",
+    "title": "Crux"
+  },
+  "Crysto": {
+    "base_folder": "download/crysto",
+    "title": "Crysto"
+  },
+  "CurtainDamashii": {
+    "base_folder": "download/curtain-damashii",
+    "title": "Curtain Damashii"
+  },
+  "Dashstore": {
+    "base_folder": "download/dashstore",
+    "title": "Dash Store"
+  },
+  "Dezaegg": {
+    "base_folder": "download/dezaegg",
+    "title": "Dezaegg",
+    "max_processes": 1
+  },
+  "DmmScratch": {
+    "base_folder": "download/dmmscratch",
+    "title": "DMM Scratch"
+  },
+  "EeoStore": {
+    "base_folder": "download/eeostore",
+    "title": "Eeo Store"
+  },
+  "Ensky": {
+    "base_folder": "download/ensky",
+    "title": "Ensky"
+  },
+  "Fnex": {
+    "base_folder": "download/fnex",
+    "title": "F:Nex"
+  },
+  "Gamers": {
+    "base_folder": "download/gamers",
+    "title": "Gamers"
+  },
+  "Goodsmile": {
+    "base_folder": "download/goodsmile",
+    "title": "Goodsmile Company"
+  },
+  "GraffArt": {
+    "base_folder": "download/graffart",
+    "title": "GraffArt Shop"
+  },
+  "Granup": {
+    "base_folder": "download/granup",
+    "title": "Granup"
+  },
+  "HobbySearch": {
+    "base_folder": "download/hobbysearch",
+    "title": "Hobby Search"
+  },
+  "HobbyStock": {
+    "base_folder": "download/hobbystock",
+    "title": "Hobby Stock"
+  },
+  "Kotobukiya": {
+    "base_folder": "download/kotobukiya",
+    "title": "Kotobukiya"
+  },
+  "Kujibikido": {
+    "base_folder": "download/kujibikido",
+    "title": "Kujibikido"
+  },
+  "Kujicolle": {
+    "base_folder": "download/kujicolle",
+    "title": "Kujicolle"
+  },
+  "LuckyChallengeKuji": {
+    "base_folder": "download/luckychallengekuji",
+    "title": "Lucky Challenge Kuji"
+  },
+  "Medicos": {
+    "base_folder": "download/medicos",
+    "title": "Medicos Entertainment",
+    "max_processes": 1
+  },
+  "MetalBox": {
+    "base_folder": "download/metalbox",
+    "title": "Metal Box"
+  },
+  "Midobeyo": {
+    "base_folder": "download/midobeyo",
+    "title": "Midoccoly Beyond"
+  },
+  "MSFactory": {
+    "base_folder": "download/msfactory",
+    "title": "MS Factory"
+  },
+  "Neowing": {
+    "base_folder": "download/neowing",
+    "title": "Neowing (CDJapan)"
+  },
+  "OnlineKujira": {
+    "base_folder": "download/onlinekujira",
+    "title": "Online Kujira"
+  },
+  "PenguinParade": {
+    "base_folder": "download/penguinparade",
+    "title": "Penguin Parade"
+  },
+  "Quesq": {
+    "base_folder": "download/quesq",
+    "title": "QuesQ"
+  },
+  "Saing": {
+    "base_folder": "download/saing",
+    "title": "Saing"
+  },
+  "Sofmap": {
+    "base_folder": "download/sofmap",
+    "title": "Sofmap"
+  },
+  "StellaNotes": {
+    "base_folder": "download/stellanotes",
+    "title": "Stella Notes"
+  },
+  "Tapioca": {
+    "base_folder": "download/tapioca",
+    "title": "Tapioca"
+  },
+  "TeamEc": {
+    "base_folder": "download/teamec",
+    "title": "Team Entertainment Store"
+  },
+  "TheChara": {
+    "base_folder": "download/thechara",
+    "title": "The Chara"
+  },
+  "UnionCreative": {
+    "base_folder": "download/union-creative",
+    "title": "Union Creative"
+  },
+  "WaveCorporation": {
+    "base_folder": "download/wave",
+    "title": "Wave Corporation"
+  },
+  "YYWorld": {
+    "base_folder": "download/yyworld",
+    "title": "YYWorld"
+  }
+}
