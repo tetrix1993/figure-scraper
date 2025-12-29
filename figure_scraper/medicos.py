@@ -66,29 +66,29 @@ class Medicos(Website):
         product_url = cls.product_url_template % id_
         try:
             soup = cls.get_soup(product_url)
-            divs = soup.find_all('div', class_='slide-item')
-            if len(divs) == 0:
+            imgs = soup.select('div.product-gallery .swiper-slide img[src]')
+            if len(imgs) == 0:
                 print('[ERROR] Product ID %s does not exists.' % id_)
                 return
             prefix = id_
             if use_jan:
                 prefix = cls.get_jan_code(id_, soup)
-            num_max_length = len(str(len(divs)))
-            for i in range(len(divs)):
-                image = divs[i].find('img')
-                if image and image.has_attr('src'):
-                    # image_url = cls.product_url_prefix + image['src']
-                    image_url = image['src']
-                    index = image_url.find('/html/')  # To get better color picture
-                    if index > 0:
-                        image_url = cls.product_url_prefix + image_url[index:]
-                    if len(divs) == 1:
-                        image_name = prefix + '.jpg'
-                    else:
-                        image_name = '%s_%s.jpg' % (prefix, str(i + 1).zfill(num_max_length))
-                    if folder:
-                        image_name = folder + '/' + image_name
-                    cls.download_image(image_url, image_name)
+            num_max_length = len(str(len(imgs)))
+            for i in range(len(imgs)):
+                if i > 0 and i == len(imgs) - 1:  # Exclude last image (ignore bonus)
+                    continue
+                image = imgs[i]
+                image_url = image['src']
+                index = image_url.find('/html/')  # To get better color picture
+                if index > 0:
+                    image_url = cls.product_url_prefix + image_url[index:]
+                if len(imgs) == 1:
+                    image_name = prefix + '.jpg'
+                else:
+                    image_name = '%s_%s.jpg' % (prefix, str(i + 1).zfill(num_max_length))
+                if folder:
+                    image_name = folder + '/' + image_name
+                cls.download_image(image_url, image_name)
         except Exception as e:
             print('[ERROR] Error in processing %s' % product_url)
             print(e)
