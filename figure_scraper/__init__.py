@@ -20,6 +20,7 @@ from figure_scraper.dezaegg import Dezaegg
 from figure_scraper.dmmscratch import DmmScratch
 from figure_scraper.eeostore import EeoStore
 from figure_scraper.ensky import Ensky
+from figure_scraper.eurekakuji import EurekaKuji
 from figure_scraper.fnex import Fnex
 from figure_scraper.gamers import Gamers
 from figure_scraper.goodsmile import Goodsmile
