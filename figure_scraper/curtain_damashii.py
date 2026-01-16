@@ -22,6 +22,7 @@ class CurtainDamashii(Website):
             print('1: Download by Product ID')
             print('2: Download by Tag')
             print('3: Download by Event')
+            print('4: Download by Template')
             print('0: Return')
 
             try:
@@ -32,6 +33,8 @@ class CurtainDamashii(Website):
                     cls.download_by_tag()
                 elif choice == 3:
                     cls.download_by_event()
+                elif choice == 4:
+                    cls.download_by_template()
                 elif choice == 0:
                     return
                 else:
@@ -274,3 +277,33 @@ class CurtainDamashii(Website):
             else:
                 save_folder = '%s/%s/%s' % (constants.SUBFOLDER_CURTAIN_DAMASHII_EVENT, event, series)
             cls.process_product_page(product_id, save_folder)
+
+    @classmethod
+    def download_by_template(cls):
+        template = 'https://www.curtain-damashii.com/parts/item_img/%1/%2_%1%0%3/%2_%1%0%3%4.jpg'
+        check_p2 = False
+        while True:
+            print('[INFO] Download by template: https://www.curtain-damashii.com/parts/item_img/%1/%2_%1%0%3/%2_%1%0%3%4.jpg')
+            p1 = input('Enter %1: ')
+            if len(p1) == 0:
+                break
+            while True:
+                p2 = input('Enter %2: ')
+                if len(p2) == 0:
+                    break
+                p3 = input('Enter %3: ')
+                p4 = input('Enter %4: ')
+                template_url = template.replace('%1', p1).replace('%2', p2).replace('%3', p3).replace('%4', p4)
+                expr = input('Enter expression (Product IDs): ')
+                if len(expr) == 0:
+                    continue
+                numbers = cls.get_numbers_from_expression(expr)
+                if len(numbers) == 0:
+                    continue
+                for num in numbers:
+                    image_url = template_url.replace('%0', str(num).zfill(2))
+                    image_name = f'{constants.SUBFOLDER_CURTAIN_DAMASHII_TEMPLATE}/{p1}/{image_url.split("/")[-1]}'
+                    try:
+                        cls.download_image(image_url, image_name)
+                    except:
+                        print(f'[ERROR] Error downloading {image_url}')
