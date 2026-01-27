@@ -121,18 +121,17 @@ class Neowing(Website):
                 jan_code = cls.get_jan_code(soup)
                 if len(jan_code) > 0:
                     image_name_prefix = jan_code
-            images = ul.find_all('img')
+            images = ul.select('.product_large_thumb a[href]')
             num_max_length = len(str(len(images)))
             for i in range(len(images)):
-                if images[i].has_attr('src'):
-                    image_url = 'https:' + images[i]['src']
-                    if len(images) == 1:
-                        image_name = image_name_prefix + '.jpg'
-                    else:
-                        image_name = '%s_%s.jpg' % (image_name_prefix, str(i + 1).zfill(num_max_length))
-                    if folder:
-                        image_name = folder + '/' + image_name
-                    cls.download_image(image_url, image_name)
+                image_url = 'https:' + images[i]['href']
+                if len(images) == 1:
+                    image_name = image_name_prefix + '.jpg'
+                else:
+                    image_name = '%s_%s.jpg' % (image_name_prefix, str(i + 1).zfill(num_max_length))
+                if folder:
+                    image_name = folder + '/' + image_name
+                cls.download_image(image_url, image_name)
         except Exception as e:
             print('[ERROR] Error in processing %s' % product_url)
             print(e)
