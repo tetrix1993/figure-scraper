@@ -108,6 +108,10 @@
     "base_folder": "download/hobbystock",
     "title": "Hobby Stock"
   },
+  "IRightsShop": {
+    "base_folder": "download/irightsshop",
+    "title": "I-Rights Shop"
+  },
   "Kotobukiya": {
     "base_folder": "download/kotobukiya",
     "title": "Kotobukiya"

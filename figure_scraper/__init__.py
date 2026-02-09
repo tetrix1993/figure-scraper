@@ -28,6 +28,7 @@ from figure_scraper.graffart import GraffArt
 from figure_scraper.granup import Granup
 from figure_scraper.hobbysearch import HobbySearch
 from figure_scraper.hobbystock import HobbyStock
+from figure_scraper.irightsshop import IRightsShop
 from figure_scraper.kotobukiya import Kotobukiya
 from figure_scraper.kujibikido import Kujibikido
 from figure_scraper.kujicolle import Kujicolle
