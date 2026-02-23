@@ -71,21 +71,20 @@ class Amnibus(Website):
         image_name_prefix = id_
         try:
             soup = cls.get_soup(product_url)
-            div = soup.find('div', class_='detail-slider')
-            if not div:
+            images = soup.select('.productDetail__imgsContainer--main img[src],.detailPresent img[src]')
+            if len(images) == 0:
                 print('[ERROR] Product ID %s does not exists.' % str(product_id))
-            images = div.find_all('img')
+                return
             num_max_length = len(str(len(images)))
             for i in range(len(images)):
-                if images[i].has_attr('src'):
-                    image_url = images[i]['src']
-                    if len(images) == 1:
-                        image_name = image_name_prefix + '.jpg'
-                    else:
-                        image_name = '%s_%s.jpg' % (image_name_prefix, str(i + 1).zfill(num_max_length))
-                    if folder:
-                        image_name = folder + '/' + image_name
-                    cls.download_image(image_url, image_name)
+                image_url = images[i]['src']
+                if len(images) == 1:
+                    image_name = image_name_prefix + '.jpg'
+                else:
+                    image_name = '%s_%s.jpg' % (image_name_prefix, str(i + 1).zfill(num_max_length))
+                if folder:
+                    image_name = folder + '/' + image_name
+                cls.download_image(image_url, image_name)
         except Exception as e:
             print('[ERROR] Error in processing %s' % product_url)
             print(e)
