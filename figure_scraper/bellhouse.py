@@ -46,16 +46,20 @@ class BellHouse(Website):
     def process_news_page(cls, news_id):
         url = cls.news_url_template % news_id
         try:
-            soup = cls.get_soup(url)
-            p_tags = soup.find_all('p', class_='news_item_thmb')
-            for tag in p_tags:
-                a_tag = tag.find('a')
-                image = tag.find('img')
-                if a_tag and image and a_tag.has_attr('href') and image.has_attr('src'):
-                    image_url = cls.get_full_image_url(image['src'])
-                    image_name = constants.SUBFOLDER_BELLHOUSE_NEWS + '/' + news_id + '/'\
-                        + a_tag['href'].split('/')[-1] + '.jpg'
-                    cls.download_image(image_url, image_name)
+            soup = cls.get_soup(url, impersonate=True)
+            a_tags = soup.select('.news_item_thmb a[href]')
+            for a_tag in a_tags:
+                href_idx = a_tag['href'].rfind('/')
+                image_name = a_tag['href'][href_idx + 1:]
+                image = a_tag.select('img[src]')
+                if len(image) == 0:
+                    continue
+                idx = image[0]['src'].rfind('/')
+                if idx == -1:
+                    continue
+                image_url = image[0]['src'][0:idx] + '/fit=cover,f=jpg'
+                image_name = constants.SUBFOLDER_BELLHOUSE_NEWS + '/' + news_id + '/' + image_name + '.jpg'
+                cls.download_image(image_url, image_name)
         except Exception as e:
             print('[ERROR] Error in processing %s' % url)
             print(e)
@@ -64,14 +68,15 @@ class BellHouse(Website):
     def process_product_page(cls, product_id):
         url = cls.product_url_template % product_id
         try:
-            soup = cls.get_soup(url)
-            div = soup.find('div', class_='main_content_gallery_image')
-            if div:
-                image = div.find('img')
-                if image and image.has_attr('src'):
-                    image_url = cls.get_full_image_url(image['src'])
-                    image_name = constants.SUBFOLDER_BELLHOUSE_IMAGES + '/' + product_id + '.jpg'
-                    cls.download_image(image_url, image_name)
+            soup = cls.get_soup(url, impersonate=True)
+            images = soup.select('.main_content_gallery_image img[src]')
+            for i in range(len(images)):
+                idx = images[i]['src'].rfind('/')
+                if idx == -1:
+                    continue
+                image_url = images[i]['src'][0:idx] + '/fit=cover,f=jpg'
+                image_name = constants.SUBFOLDER_BELLHOUSE_IMAGES + '/' + product_id + '_' + str(i + 1) + '.jpg'
+                cls.download_image(image_url, image_name)
         except Exception as e:
             print('[ERROR] Error in processing %s' % url)
             print(e)

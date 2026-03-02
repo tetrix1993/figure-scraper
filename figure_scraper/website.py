@@ -2,6 +2,7 @@ import json
 import os
 import re
 import requests
+from curl_cffi import requests as requests2
 import time
 import figure_scraper.constants as constants
 import urllib3.exceptions
@@ -96,16 +97,20 @@ class Website:
             return os.path.exists(cls.base_folder + '/' + filename)
 
     @staticmethod
-    def get_soup(url, headers=None, decode=False, charset='utf-8', cookies=None, get_text=False, verify=True):
+    def get_soup(url, headers=None, decode=False, charset='utf-8', cookies=None, get_text=False, verify=True,
+                 impersonate=False):
         if headers is None:
             headers = constants.HTTP_HEADER_USER_AGENT
         if charset:
             headers['Content-Type'] = 'text/html; charset=' + charset
         try:
-            if cookies:
-                result = requests.get(url, headers=headers, cookies=cookies, verify=verify)
+            if impersonate:
+                result = requests2.get(url, headers=headers, verify=verify, impersonate='chrome')
             else:
-                result = requests.get(url, headers=headers, verify=verify)
+                if cookies:
+                    result = requests.get(url, headers=headers, cookies=cookies, verify=verify)
+                else:
+                    result = requests.get(url, headers=headers, verify=verify)
             if get_text:
                 return bs(str(result.text), 'html.parser')
             if decode:
