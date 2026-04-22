@@ -1,6 +1,8 @@
 from figure_scraper.website import Website
 import figure_scraper.constants as constants
 from multiprocessing import Pool
+import json
+import os
 
 
 class HobbySearch(Website):
@@ -22,10 +24,12 @@ class HobbySearch(Website):
                 return
             evaluate = True
             use_jan = False
+            is_scan = False
             while True:
                 print('Select name of file to save as: ')
                 print('1: Use Product ID as name')
                 print('2: Use JAN code as name if possible')
+                print('3: Scan for JAN code instead of downloading images')
                 print('0: Return')
 
                 try:
@@ -34,6 +38,9 @@ class HobbySearch(Website):
                         break
                     elif choice == 2:
                         use_jan = True
+                        break
+                    elif choice == 3:
+                        is_scan = True
                         break
                     elif choice == 0:
                         evaluate = False
@@ -45,6 +52,47 @@ class HobbySearch(Website):
             if evaluate:
                 numbers = cls.get_sorted_page_numbers(expr)
                 today = cls.get_today_date()
+                if is_scan:
+                    scan_output_file = constants.FILE_HOBBYSEARCH_SCAN_OUTPUT % today
+                    print('The result of the scan is saved at: %s' % scan_output_file)
+                    temp_folder = cls.base_folder + '/' + constants.SUBFOLDER_HOBBYSEARCH_TEMP
+                    if not os.path.exists(temp_folder):
+                        os.makedirs(temp_folder)
+                    if len(numbers) == 1:
+                        cls.scan_product_page(numbers[0])
+                    else:
+                        max_processes = min(cls.max_processes, len(numbers))
+                        if max_processes <= 0:
+                            max_processes = 1
+                        with Pool(max_processes) as p:
+                            results = []
+                            for number in numbers:
+                                result = p.apply_async(cls.scan_product_page, (number,))
+                                results.append(result)
+                            for result in results:
+                                result.wait()
+
+                    item_list = []
+                    for number in numbers:
+                        filepath = temp_folder + '/' + str(number)
+                        if os.path.exists(filepath):
+                            if os.path.exists(filepath):
+                                with open(filepath, 'r', encoding='utf-8') as f:
+                                    line = f.readline()
+                                    split1 = line.replace('\n', '').split('\t')
+                                    if len(split1) == 3:
+                                        item_list.append({'id': split1[0], 'jan': split1[1], 'title': split1[2]})
+                    with open(scan_output_file, 'a+', encoding='utf-8') as f:
+                        for item in item_list:
+                            f.write('%s\t%s\t%s\n' % (item['id'], item['jan'], item['title']))
+                    for number in numbers:
+                        filepath = temp_folder + '/' + str(number)
+                        if os.path.exists(filepath):
+                            os.remove(filepath)
+                    if os.path.exists(temp_folder):
+                        os.removedirs(temp_folder)
+                    continue
+
                 print('[INFO] Images will be saved at %s' % (cls.base_folder + '/' + today))
                 if len(numbers) == 1:
                     cls.process_product_page(numbers[0], use_jan, today)
@@ -64,54 +112,61 @@ class HobbySearch(Website):
     def process_product_page(cls, product_id, use_jan=False, folder=None):
         id_ = str(product_id)
         product_url = cls.product_url_template % id_
-        image_name_prefix = id_
+        image_name = id_
         try:
-            soup = cls.get_soup(product_url)
-            a_tags = soup.find_all('a', {'target': id_})
-            a_tag = None
-            for tag in a_tags:
-                if tag.has_attr('href') and 'image' in tag['href']:
-                    a_tag = tag
-                    break
-            if not a_tag:
+            soup = cls.get_soup(product_url, impersonate=True)
+            script_tag = soup.select('script[type="application/ld+json"]')
+            if len(script_tag) == 0:
+                return
+            json_obj = json.loads(script_tag[0].string)
+            image_url = ''
+            for obj in json_obj:
+                if 'image' in obj:
+                    image_url = cls.page_prefix + obj['image']
+                else:
+                    continue
+                if use_jan and 'gtin13' in obj:
+                    image_name = obj['gtin13']
+                break
+            if len(image_url) == 0:
                 print('[ERROR] Product ID %s does not exists.' % id_)
                 return
-            if use_jan:
-                jan_code = cls.get_jan_code(soup)
-                if len(jan_code) > 0:
-                    image_name_prefix = jan_code
-            image_found = False
-            if a_tag:
-                gallery_url = cls.page_prefix + a_tag['href']
-                gallery_soup = cls.get_soup(gallery_url)
-                imgbox2 = gallery_soup.find('span', class_='imgbox2')
-                if imgbox2:
-                    a_img_tags = imgbox2.find_all('a')
-                    if len(a_img_tags) > 0:
-                        image_found = True
-                        num_max_length = len(str(len(a_img_tags)))
-                        for i in range(len(a_img_tags)):
-                            if a_img_tags[i].has_attr('onmouseover') and "myChgPic('" in a_img_tags[i]['onmouseover']:
-                                image_url = a_img_tags[i]['onmouseover'].split("myChgPic('")[1].split("'")[0]
-                                if len(a_img_tags) == 1:
-                                    image_name = image_name_prefix + '.jpg'
-                                else:
-                                    image_name = '%s_%s.jpg' % (image_name_prefix, str(i + 1).zfill(num_max_length))
-                                if folder:
-                                    image_name = folder + '/' + image_name
-                                cls.download_image(image_url, image_name)
-            if not image_found:
-                print('[ERROR] Product ID %s does not have image.' % id_)
+            if folder:
+                image_name = folder + '/' + image_name
+            cls.download_image(image_url, image_name + '.jpg')
         except Exception as e:
             print('[ERROR] Error in processing %s' % product_url)
             print(e)
 
-    @staticmethod
-    def get_jan_code(soup):
-        result = ''
-        tr = soup.find('tr', id='masterBody_trJanCode')
-        if tr:
-            tds = tr.find_all('td')
-            if len(tds) > 1:
-                result = tds[-1].text
-        return result
+    @classmethod
+    def scan_product_page(cls, product_id):
+        id_ = str(product_id)
+        product_url = cls.product_url_template % id_
+        if not os.path.exists(constants.SUBFOLDER_HOBBYSEARCH_SCAN):
+            os.makedirs(constants.SUBFOLDER_HOBBYSEARCH_SCAN)
+        try:
+            soup = cls.get_soup(product_url, impersonate=True)
+            script_tag = soup.select('script[type="application/ld+json"]')
+            if len(script_tag) == 0:
+                return
+            json_obj = json.loads(script_tag[0].string)
+            name = None
+            jan = None
+            for obj in json_obj:
+                if 'name' in obj:
+                    name = obj['name']
+                if 'gtin13' in obj:
+                    jan = obj['gtin13']
+                if name is None or jan is None:
+                    continue
+                break
+            if name is None or jan is None:
+                print('[ERROR] Product ID %s does not exists.' % str(product_id))
+                return
+            filepath = cls.base_folder + '/' + constants.SUBFOLDER_HOBBYSEARCH_TEMP + '/' + str(product_id)
+            with open(filepath, 'a+', encoding='utf-8') as f:
+                f.write('%s\t%s\t%s' % (str(product_id), jan, name))
+            print('Processed %s' % product_url)
+        except Exception as e:
+            print('[ERROR] Error in processing %s' % product_url)
+            print(e)
