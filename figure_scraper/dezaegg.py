@@ -1,6 +1,7 @@
 from figure_scraper.website import Website
 import figure_scraper.constants as constants
 from multiprocessing import Pool
+import os
 
 
 class Dezaegg(Website):
@@ -25,15 +26,17 @@ class Dezaegg(Website):
         expr = input('Enter product IDs: ')
         if len(expr) == 0:
             return False
-        product_ids = cls.get_sorted_page_numbers(expr)
-        if len(product_ids) == 0:
+        numbers = cls.get_sorted_page_numbers(expr)
+        if len(numbers) == 0:
             return True
 
         use_jan = False
+        is_scan = False
         while True:
             print('Select name of file to save as: ')
             print('1: Use Product ID as name')
             print('2: Use JAN code as name if possible')
+            print('3: Scan for JAN code instead of downloading images')
             print('0: Return')
 
             try:
@@ -43,6 +46,9 @@ class Dezaegg(Website):
                 elif choice == 2:
                     use_jan = True
                     break
+                elif choice == 3:
+                    is_scan = True
+                    break
                 elif choice == 0:
                     return True
                 else:
@@ -51,15 +57,55 @@ class Dezaegg(Website):
                 print('[ERROR] Invalid choice.')
 
         today = cls.get_today_date()
-        if len(product_ids) == 1:
-            cls.process_product_page(product_ids[0], use_jan, today)
+        if is_scan:
+            scan_output_file = constants.FILE_DEZAEGG_SCAN_OUTPUT % today
+            print('The result of the scan is saved at: %s' % scan_output_file)
+            temp_folder = cls.base_folder + '/' + constants.SUBFOLDER_DEZAEGG_TEMP
+            if not os.path.exists(temp_folder):
+                os.makedirs(temp_folder)
+            if len(numbers) == 1:
+                cls.scan_product_page(numbers[0])
+            else:
+                max_processes = min(cls.max_processes, len(numbers))
+                if max_processes <= 0:
+                    max_processes = 1
+                with Pool(max_processes) as p:
+                    results = []
+                    for number in numbers:
+                        result = p.apply_async(cls.scan_product_page, (number,))
+                        results.append(result)
+                    for result in results:
+                        result.wait()
+
+            item_list = []
+            for number in numbers:
+                filepath = temp_folder + '/' + str(number)
+                if os.path.exists(filepath):
+                    if os.path.exists(filepath):
+                        with open(filepath, 'r', encoding='utf-8') as f:
+                            line = f.readline()
+                            split1 = line.replace('\n', '').split('\t')
+                            if len(split1) == 3:
+                                item_list.append({'id': split1[0], 'jan': split1[1], 'title': split1[2]})
+            with open(scan_output_file, 'a+', encoding='utf-8') as f:
+                for item in item_list:
+                    f.write('%s\t%s\t%s\n' % (item['id'], item['jan'], item['title']))
+            for number in numbers:
+                filepath = temp_folder + '/' + str(number)
+                if os.path.exists(filepath):
+                    os.remove(filepath)
+            if os.path.exists(temp_folder):
+                os.removedirs(temp_folder)
+            return True
+        if len(numbers) == 1:
+            cls.process_product_page(numbers[0], use_jan, today)
         else:
-            max_processes = min(cls.max_processes, len(product_ids))
+            max_processes = min(cls.max_processes, len(numbers))
             if max_processes <= 0:
                 max_processes = 1
             with Pool(max_processes) as p:
                 results = []
-                for product_id in product_ids:
+                for product_id in numbers:
                     result = p.apply_async(cls.process_product_page, (product_id, use_jan, today))
                     results.append(result)
                 for result in results:
@@ -105,3 +151,32 @@ class Dezaegg(Website):
         if len(elem) > 0:
             result = elem[0].text.strip()
         return result
+
+    @staticmethod
+    def get_product_name(soup):
+        result = ''
+        elem = soup.select('h1.title')
+        if len(elem) > 0:
+            result = elem[0].text.strip()
+        return result
+
+    @classmethod
+    def scan_product_page(cls, product_id):
+        id_ = str(product_id)
+        product_url = cls.product_url_template % id_
+        if not os.path.exists(constants.SUBFOLDER_DEZAEGG_SCAN):
+            os.makedirs(constants.SUBFOLDER_DEZAEGG_SCAN)
+        try:
+            soup = cls.get_soup(product_url)
+            jan = cls.get_jan_code(soup)
+            name = cls.get_product_name(soup)
+            if name is None or jan is None:
+                print('[ERROR] Product ID %s does not exists.' % str(product_id))
+                return
+            filepath = cls.base_folder + '/' + constants.SUBFOLDER_DEZAEGG_TEMP + '/' + str(product_id)
+            with open(filepath, 'a+', encoding='utf-8') as f:
+                f.write('%s\t%s\t%s' % (str(product_id), jan, name))
+            print('Processed %s' % product_url)
+        except Exception as e:
+            print('[ERROR] Error in processing %s' % product_url)
+            print(e)
