@@ -32,6 +32,7 @@ from figure_scraper.irightsshop import IRightsShop
 from figure_scraper.kotobukiya import Kotobukiya
 from figure_scraper.kujibikido import Kujibikido
 from figure_scraper.kujicolle import Kujicolle
+from figure_scraper.kujiroad import Kujiroad
 from figure_scraper.luckychallengekuji import LuckyChallengeKuji
 from figure_scraper.medicos import Medicos
 from figure_scraper.metalbox import MetalBox
