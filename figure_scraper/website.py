@@ -230,9 +230,13 @@ class Website:
         if len(str_jan) == 0 or not str_jan.isnumeric():
             return None
         sum_ = 0
+        is_even_length = len(str_jan) % 2 == 0
         for i in range(len(str_jan)):
             num = int(str_jan[i])
-            sum_ += num * 3 if i % 2 == 1 else num
+            if (is_even_length and i % 2 == 1) or (not is_even_length and i % 2 == 0):
+                sum_ += num * 3
+            else:
+                sum_ += num
         checksum = 10 - sum_ % 10
         if checksum == 10:
             checksum = 0
