@@ -223,3 +223,17 @@ class Website:
     @staticmethod
     def get_today_date():
         return datetime.today().strftime('%Y%m%d')
+
+    @staticmethod
+    def complete_jancode(jan):
+        str_jan = str(jan)
+        if len(str_jan) == 0 or not str_jan.isnumeric():
+            return None
+        sum_ = 0
+        for i in range(len(str_jan)):
+            num = int(str_jan[i])
+            sum_ += num * 3 if i % 2 == 1 else num
+        checksum = 10 - sum_ % 10
+        if checksum == 10:
+            checksum = 0
+        return str_jan + str(checksum)

@@ -70,6 +70,8 @@ class Sofmap(Website):
             for number in numbers:
                 try:
                     jancode = cls.complete_jancode(number)
+                    if jancode is None or len(jancode) == 0:
+                        continue
                 except:
                     print('[ERROR] Failed to complete JAN code: ' + str(number))
                     continue
