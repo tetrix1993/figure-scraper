@@ -46,6 +46,7 @@ from figure_scraper.penguinparade import PenguinParade
 from figure_scraper.qinocop import Qinocop
 from figure_scraper.quesq import Quesq
 from figure_scraper.saing import Saing
+from figure_scraper.seasonalplants import SeasonalPlants
 from figure_scraper.sofmap import Sofmap
 from figure_scraper.stellanotes import StellaNotes
 from figure_scraper.tapioca import Tapioca
