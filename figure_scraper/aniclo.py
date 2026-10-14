@@ -38,11 +38,13 @@ class Aniclo(Website):
                         continue
                     image_url = cls.image_url_prefix + jancode + suffix
                     try:
-                        extension = image_url.split('.')[-1]
-                        if extension in ['jpg', 'jpeg', 'png', 'webp']:
-                            image_name = today + '/' + str(jancode) + '.' + extension
+                        period_idx = suffix.rfind('.')
+                        if period_idx > 0:
+                            extension = suffix[period_idx + 1:].split('?')[0]
+                            image_name = jancode + suffix[:period_idx] + '.' + extension
                         else:
-                            image_name = today + '/' + str(jancode) + '.jpg'
+                            image_name = jancode + '.jpg'
+                        image_name = today + '/' + image_name
                         cls.download_image(image_url, image_name, try_count=1)
                     except Exception as e:
                         print('[ERROR] Error in downloading %s' % image_url)
