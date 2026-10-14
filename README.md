@@ -12,6 +12,7 @@ The scraper scrapes the following websites:
 * [Amakuni](http://amakuni.info/)
 * [AmiAmi](https://amiami.jp/)
 * [Amnibus](https://amnibus.com/)
+* [Aniclo](https://aniclo.jp/)
 * [Animaru](https://animaru.jp/)
 * [Animate](https://www.animate-onlineshop.jp/)
 * [Aniplex+](https://www.aniplexplus.com/)
