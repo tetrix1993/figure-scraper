@@ -12,6 +12,8 @@ class Cocollabo(Website):
     product_url_template = page_prefix + 'shop/g/%s/'
     category_url_template = page_prefix + 'shop/r/%s/'
 
+    image_url_template = 'https://www.cocollabo.net/cdn/shop/files/%s_1.jpg'
+
     @classmethod
     def run(cls):
         cls.init()
@@ -20,6 +22,7 @@ class Cocollabo(Website):
             print('[INFO] Select an option: ')
             print('1: Download by Product ID')
             print('2: Download by Category')
+            print('3: Download by JAN Code')
             print('0: Return')
 
             try:
@@ -28,6 +31,8 @@ class Cocollabo(Website):
                     cls.download_by_product_id()
                 elif choice == 2:
                     cls.download_by_category_id()
+                elif choice == 3:
+                    cls.download_by_jancode()
                 elif choice == 0:
                     return
                 else:
@@ -148,3 +153,32 @@ class Cocollabo(Website):
         except Exception as e:
             print('[ERROR] Error in processing %s' % category_url)
             print(e)
+
+    @classmethod
+    def download_by_jancode(cls):
+        while True:
+            try:
+                expr = input('Enter expression (JAN code without checksum): ').strip()
+                numbers = cls.get_sorted_page_numbers(expr)
+                if len(numbers) == 0:
+                    return
+                today = cls.get_today_date()
+                print('[INFO] Images will be saved at %s' % (cls.base_folder + '/' + today))
+                for number in numbers:
+                    try:
+                        jancode = cls.complete_jancode(number)
+                        if jancode is None or len(jancode) == 0:
+                            continue
+                    except:
+                        print('[ERROR] Failed to complete JAN code: ' + str(number))
+                        continue
+                    image_url = cls.image_url_template % jancode
+                    try:
+                        image_name = today + '/' + str(jancode) + '.jpg'
+                        cls.download_image(image_url, image_name, try_count=1)
+                    except Exception as e:
+                        print('[ERROR] Error in downloading %s' % image_url)
+                        print(e)
+            except Exception as e:
+                print('[ERROR] Error in processing')
+                print(e)
