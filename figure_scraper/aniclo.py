@@ -18,6 +18,7 @@ class Aniclo(Website):
 
     @classmethod
     def download_by_jancode(cls):
+        print('[INFO] %s Scraper' % cls.title)
         while True:
             try:
                 expr = input('Enter expression (JAN code without checksum): ').strip()
@@ -37,7 +38,11 @@ class Aniclo(Website):
                         continue
                     image_url = cls.image_url_prefix + jancode + suffix
                     try:
-                        image_name = today + '/' + str(jancode) + '.jpg'
+                        extension = image_url.split('.')[-1]
+                        if extension in ['jpg', 'jpeg', 'png', 'webp']:
+                            image_name = today + '/' + str(jancode) + '.' + extension
+                        else:
+                            image_name = today + '/' + str(jancode) + '.jpg'
                         cls.download_image(image_url, image_name, try_count=1)
                     except Exception as e:
                         print('[ERROR] Error in downloading %s' % image_url)

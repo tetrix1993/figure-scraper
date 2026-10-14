@@ -7,6 +7,7 @@ from figure_scraper.amnibus import Amnibus
 from figure_scraper.aniclo import Aniclo
 from figure_scraper.animaru import Animaru
 from figure_scraper.animate import Animate
+from figure_scraper.animebako import Animebako
 from figure_scraper.atfes import Atfes
 from figure_scraper.aucoop import Aucoop
 from figure_scraper.aniplexplus import AniplexPlus
