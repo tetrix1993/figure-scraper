@@ -58,6 +58,7 @@ FOLDER_TEAMEC = FOLDER_BASE + '/teamec'
 FOLDER_THECHARA = FOLDER_BASE + '/thechara'
 FOLDER_UNION_CREATIVE = FOLDER_BASE + '/union-creative'
 FOLDER_WAVE = FOLDER_BASE + '/wave'
+FOLDER_WEBKUJI = FOLDER_BASE + '/webkuji'
 FOLDER_YYWORLD = FOLDER_BASE + '/yyworld'
 
 SUBFOLDER_AMIAMI_SCAN = FOLDER_AMIAMI + '/scan'
@@ -190,6 +191,7 @@ WEBSITE_TITLE_TEAMEC = 'Team Entertainment Store'
 WEBSITE_TITLE_THECHARA = 'The Chara'
 WEBSITE_TITLE_UNION_CREATIVE = 'Union Creative'
 WEBSITE_TITLE_WAVE = 'Wave Corporation'
+WEBSITE_TITLE_WEBKUJI = 'Web Kuji'
 WEBSITE_TITLE_YYWORLD = 'YYWorld'
 
 HTTP_HEADER_USER_AGENT = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36'}

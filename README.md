@@ -54,6 +54,7 @@ The scraper scrapes the following websites:
 * [The Chara](https://the-chara.com/)
 * [Union Creative](https://union-creative.jp/)
 * [Wave Corporation](https://www.hobby-wave.com/)
+* [Web Kuji](https://web-kuji.jp/)
 * [YYWorld](https://yyworld.kawaiishop.jp/)
 
 ## Instructions

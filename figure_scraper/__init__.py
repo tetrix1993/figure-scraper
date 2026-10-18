@@ -57,4 +57,5 @@ from figure_scraper.teamec import TeamEc
 from figure_scraper.thechara import TheChara
 from figure_scraper.union_creative import UnionCreative
 from figure_scraper.wave import WaveCorporation
+from figure_scraper.webkuji import WebKuji
 from figure_scraper.yyworld import YYWorld
