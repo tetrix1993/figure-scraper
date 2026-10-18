@@ -130,6 +130,14 @@ class Website:
         return r.json()
 
     @staticmethod
+    def post_json(url, data=None, headers=None):
+        if headers is None:
+            headers = constants.HTTP_HEADER_USER_AGENT
+        r = requests.post(url, json=data, headers=headers)
+        r.raise_for_status()
+        return r.json()
+
+    @staticmethod
     def get_numbers_from_expression(expr):
         results = []
 

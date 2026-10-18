@@ -30,6 +30,7 @@ The scraper scrapes the following websites:
 * [Eeo Store](https://eeo.today/)
 * [Ensky](https://www.enskyshop.com/)
 * [Eureka Kuji](https://eureka-kuji.com)
+* [Fam Kuji](https://famkuji.jp/)
 * [F:Nex](https://fnex.jp/)
 * [Gamers](https://www.gamers.co.jp/)
 * [Goodsmile Company](https://www.goodsmile.info/)
