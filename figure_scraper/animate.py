@@ -2,6 +2,8 @@ from figure_scraper.website import Website
 import figure_scraper.constants as constants
 from multiprocessing import Pool
 import os
+import requests
+from urllib.parse import unquote
 
 
 class Animate(Website):
@@ -112,7 +114,7 @@ class Animate(Website):
         product_url = cls.product_url_template % id_
         image_name_prefix = id_
         try:
-            soup = cls.get_soup(product_url)
+            soup = cls.get_animate_soup(product_url)
             div = soup.find('div', class_='item_thumbs_inner')
             if not div:
                 print('[ERROR] Product ID %s does not exists.' % id_)
@@ -160,7 +162,7 @@ class Animate(Website):
         if not os.path.exists(constants.SUBFOLDER_ANIMATE_SCAN):
             os.makedirs(constants.SUBFOLDER_ANIMATE_SCAN)
         try:
-            soup = cls.get_soup(product_url)
+            soup = cls.get_animate_soup(product_url)
             title = cls.get_product_title(soup)
             jan = cls.get_jan_code(soup)
             if len(title) == 0 or len(jan) == 0:
@@ -173,3 +175,12 @@ class Animate(Website):
         except Exception as e:
             print('[ERROR] Error in processing %s' % product_url)
             print(e)
+
+    @classmethod
+    def get_animate_soup(cls, url):
+        try:
+            r = requests.get(url)
+            next_url = unquote(r.text.split("decodeURIComponent('")[1].split("'")[0])
+            return cls.get_soup('https://animateonlineshop.queue-it.net' + next_url)
+        except:
+            return None
