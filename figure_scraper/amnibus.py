@@ -145,14 +145,19 @@ class Amnibus(Website):
         # Main
         try:
             obj = cls.get_json(main_url)
-            if 'lottery' in obj and 'mainListImage' in obj['lottery'] and\
-                    'mainImage' in obj['lottery']['mainListImage']:
-                image_url = obj['lottery']['mainListImage']['mainImage']
-                img_ext = image_url.split('?')[0].rsplit('.', maxsplit=1)[-1]
-                image_name = 'main.' + img_ext
-                if folder:
-                    image_name = folder + '/' + image_name
-                cls.download_image(image_url, image_name)
+            if 'lottery' in obj and 'mainListImage' in obj['lottery']:
+                image = obj['lottery']['mainListImage']
+                image_url = None
+                if 'originImage' in image:
+                    image_url = image['originImage']
+                elif 'mainImage' in image:
+                    image_url = image['mainImage']
+                if image_url is not None and len(image_url) > 0:
+                    img_ext = image_url.split('?')[0].rsplit('.', maxsplit=1)[-1]
+                    image_name = 'main.' + img_ext
+                    if folder:
+                        image_name = folder + '/' + image_name
+                    cls.download_image(image_url, image_name)
         except Exception as e:
             print('[ERROR] Error in processing %s' % main_url)
             print(e)
@@ -165,10 +170,16 @@ class Amnibus(Website):
                     if 'products' not in prize:
                         continue
                     for product in prize['products']:
-                        if 'prizeNumber' not in product or 'image' not in product\
-                                or 'mainImage' not in product['image']:
+                        if 'prizeNumber' not in product or 'image' not in product:
                             continue
-                        image_url = product['image']['mainImage']
+                        image = product['image']
+                        image_url = None
+                        if 'originImage' in image:
+                            image_url = image['originImage']
+                        elif 'mainImage' in image:
+                            image_url = image['mainImage']
+                        if image_url is None or len(image_url) == 0:
+                            continue
                         img_ext = image_url.split('?')[0].rsplit('.', maxsplit=1)[-1]
                         image_name = product['prizeNumber'] + '.' + img_ext
                         if folder:
@@ -186,7 +197,14 @@ class Amnibus(Website):
                 for present in obj['presents']:
                     if 'image' not in present or 'mainImage' not in present['image']:
                         continue
-                    image_url = present['image']['mainImage']
+                    image = present['image']
+                    image_url = None
+                    if 'originImage' in image:
+                        image_url = image['originImage']
+                    elif 'mainImage' in image:
+                        image_url = image['originImage']
+                    if image_url is None or len(image_url) == 0:
+                        continue
                     img_ext = image_url.split('?')[0].rsplit('.', maxsplit=1)[-1]
                     i += 1
                     image_name = 'present' + str(i) + '.' + img_ext
