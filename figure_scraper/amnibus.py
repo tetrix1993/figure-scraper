@@ -12,6 +12,7 @@ class Amnibus(Website):
     page_prefix = 'https://amnibus.com'
     product_url_template = page_prefix + '/products/detail/%s'
     event_url_template = 'https://%s.amnibus.com/%s/'
+    drawdraw_api_prefix = 'https://amnibus.com/drawdraw/api/%s'
 
     @classmethod
     def run(cls):
@@ -21,6 +22,7 @@ class Amnibus(Website):
             print('Select scraper: ')
             print('1: Download by Product ID')
             print('2: Download by Event ID')
+            print('3: Download Draw!Draw! (Kuji)')
             print('0: Return')
 
             try:
@@ -33,6 +35,8 @@ class Amnibus(Website):
                     cls.process_product_id_input()
                 elif choice == 2:
                     cls.process_event_id_input()
+                elif choice == 3:
+                    cls.process_drawdraw_id_input()
                 elif choice == 0:
                     return
                 else:
@@ -120,4 +124,75 @@ class Amnibus(Website):
                 cls.download_image(image_url, image_name)
         except Exception as e:
             print('[ERROR] Error in processing %s' % event_url)
+            print(e)
+
+    @classmethod
+    def process_drawdraw_id_input(cls):
+        while True:
+            print('[INFO] Page URL is in the format: https://amnibus.com/drawdraw/collection/{id}')
+            drawdraw_id = input('Enter Draw!Draw! ID: ').strip()
+            if len(drawdraw_id) == 0:
+                return
+            cls.download_drawdraw(drawdraw_id, constants.SUBFOLDER_AMNIBUS_DRAWDRAW + '/' + drawdraw_id)
+
+    @classmethod
+    def download_drawdraw(cls, drawdraw_id, folder=None):
+        id_ = str(drawdraw_id)
+        main_url = cls.drawdraw_api_prefix % id_
+        prizes_url = main_url + '/prizes'
+        presents_url = main_url + '/presents'
+
+        # Main
+        try:
+            obj = cls.get_json(main_url)
+            if 'lottery' in obj and 'mainListImage' in obj['lottery'] and\
+                    'mainImage' in obj['lottery']['mainListImage']:
+                image_url = obj['lottery']['mainListImage']['mainImage']
+                img_ext = image_url.split('?')[0].rsplit('.', maxsplit=1)[-1]
+                image_name = 'main.' + img_ext
+                if folder:
+                    image_name = folder + '/' + image_name
+                cls.download_image(image_url, image_name)
+        except Exception as e:
+            print('[ERROR] Error in processing %s' % main_url)
+            print(e)
+
+        # Prizes
+        try:
+            obj = cls.get_json(prizes_url)
+            if 'prizes' in obj:
+                for prize in obj['prizes']:
+                    if 'products' not in prize:
+                        continue
+                    for product in prize['products']:
+                        if 'prizeNumber' not in product or 'image' not in product\
+                                or 'mainImage' not in product['image']:
+                            continue
+                        image_url = product['image']['mainImage']
+                        img_ext = image_url.split('?')[0].rsplit('.', maxsplit=1)[-1]
+                        image_name = product['prizeNumber'] + '.' + img_ext
+                        if folder:
+                            image_name = folder + '/' + image_name
+                        cls.download_image(image_url, image_name)
+        except Exception as e:
+            print('[ERROR] Error in processing %s' % prizes_url)
+            print(e)
+
+        # Presents
+        i = 0
+        try:
+            obj = cls.get_json(presents_url)
+            if 'presents' in obj:
+                for present in obj['presents']:
+                    if 'image' not in present or 'mainImage' not in present['image']:
+                        continue
+                    image_url = present['image']['mainImage']
+                    img_ext = image_url.split('?')[0].rsplit('.', maxsplit=1)[-1]
+                    i += 1
+                    image_name = 'present' + str(i) + '.' + img_ext
+                    if folder:
+                        image_name = folder + '/' + image_name
+                    cls.download_image(image_url, image_name)
+        except Exception as e:
+            print('[ERROR] Error in processing %s' % presents_url)
             print(e)
