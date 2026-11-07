@@ -34,15 +34,21 @@ class Tsutaya(Website):
                 images.append(('main.' + img_ext, header_img['data-sd-img-src']))
             divs = soup.select('#goods>div')
             i = 0
+            url_set = set()
             for div in divs:
                 tags = div.select('img[data-sd-img-src]')
                 if len(tags) == 0:
                     continue
                 i += 1
-                for j in range(len(tags)):
-                    img_url = tags[j]['data-sd-img-src']
+                j = 0
+                for tag in tags:
+                    img_url = tag['data-sd-img-src']
+                    if img_url in url_set:
+                        continue
+                    j += 1
+                    url_set.add(img_url)
                     img_ext = img_url.split('?')[0].split('.')[-1]
-                    img_name = str(i).zfill(2) + '_' + str(j + 1).zfill(2) + '.' + img_ext
+                    img_name = str(i).zfill(2) + '_' + str(j).zfill(2) + '.' + img_ext
                     images.append((img_name, img_url))
             for image in images:
                 cls.download_image(image[1], page + '/' + image[0])
