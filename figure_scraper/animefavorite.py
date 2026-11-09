@@ -40,15 +40,15 @@ class AnimeFavorite(Website):
             try:
                 page_url = cls.prefix + id_
                 soup = cls.get_soup(page_url)
-                images = soup.select('.slider-slide .M_imageMainList-item img[src]')
-                for image in images:
-                    image_url = image['src'].split('?')[0]
+                images = soup.select('.slider-slide img[src]')
+                for i in range(len(images)):
+                    image_url = images[i]['src'].split('?')[0]
                     image_name = image_url.split('/')[-1]
-                    split1_ = image_name.split('.')
-                    split1_name = split1_[0]
-                    img_ext = split1_[1]
-                    split2_ = split1_name.split('_')
-                    img_name = split2_[1] + '_' + split2_[0]
+                    img_ext = image_name.split('.')[1]
+                    if len(images) == 1:
+                        img_name = id_
+                    else:
+                        img_name = id_ + '_' + str(i + 1)
                     cls.download_image(image_url, folder + '/' + img_name + '.' + img_ext)
             except Exception as e:
                 print('[ERROR] Error in processing %s' % id_)
