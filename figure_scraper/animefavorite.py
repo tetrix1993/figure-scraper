@@ -9,6 +9,8 @@ class AnimeFavorite(Website):
 
     prefix = 'https://www.animefavorite.com/shopdetail/'
 
+    image_url_template = 'https://makeshop-multi-images.akamaized.net/gencoshop/shopimages/%s/%s/%s_%s.%s'
+
     @classmethod
     def run(cls):
         cls.init()
@@ -22,7 +24,14 @@ class AnimeFavorite(Website):
             if len(numbers) == 0:
                 continue
             folder = cls.get_today_date()
-            cls.process_product_page(numbers, folder)
+            print('[INFO] Select options: ')
+            print('1: Download by processing product page')
+            print('2: Download by item url')
+            choice = input('Enter choice: ')
+            if choice == '1':
+                cls.process_product_page(numbers, folder)
+            elif choice == '2':
+                cls.process_item_url(numbers, folder)
 
     @classmethod
     def process_product_page(cls, numbers, folder=None):
@@ -44,3 +53,23 @@ class AnimeFavorite(Website):
             except Exception as e:
                 print('[ERROR] Error in processing %s' % id_)
                 print(e)
+
+    @classmethod
+    def process_item_url(cls, numbers, folder=None):
+        for number in numbers:
+            expr = input(f'Enter expression (item numbers) for {str(number)}: ')
+            if len(expr) == 0:
+                continue
+            img_nums = cls.get_numbers_from_expression(expr)
+            if len(img_nums) == 0:
+                continue
+            ext = input('Enter file extension (e.g. jpg): ')
+            id_ = str(number).zfill(12)
+            for img_num in img_nums:
+                try:
+                    image_url = cls.image_url_template % (id_[-2:], id_[-4:-2], str(img_num), id_, ext)
+                    img_name = id_ + '_' + str(img_num) + '.' + ext
+                    cls.download_image(image_url, folder + '/' + img_name)
+                except Exception as e:
+                    print('[ERROR] Error in processing %s' % id_)
+                    print(e)
