@@ -5,7 +5,7 @@ import figure_scraper.constants as constants
 class Kujicolle(Website):
     base_folder = constants.FOLDER_KUJICOLLE
     title = constants.WEBSITE_TITLE_KUJICOLLE
-    keywords = ["https://kujibikido.com"]
+    keywords = ["https://kujico.jp/"]
 
     product_url_prefix = 'https://kujico.jp/'
     product_url_template = product_url_prefix + 'detail/%s'

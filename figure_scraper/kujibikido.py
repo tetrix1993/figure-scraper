@@ -26,7 +26,7 @@ class Kujibikido(Website):
         page_url = cls.product_url_template % page
         try:
             soup = cls.get_soup(page_url)
-            images = soup.select('.kvArea .pcOnly img, .kvArea .kvItem img, .itemLineup .prizeList img, .specialimage img')
+            images = soup.select('h1 img[src], .modalItemDetail img[src]')
             if len(images) == 0:
                 print(f'[ERROR] {page_url} does not exists.')
                 return
