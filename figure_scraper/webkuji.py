@@ -69,7 +69,9 @@ class WebKuji(Website):
                                 else:
                                     image_ext = prize['itemImage'].split('.')[-1]
                                     image_name = rank + '-' + code.zfill(2) + '.' + image_ext
-                                images.append((image_name, prize['itemImage']))
+                                if image_name.endswith('.jpg') or image_name.endswith('.jpeg')\
+                                        or image_name.endswith('.png') or image_name.endswith('.webp'):
+                                    images.append((image_name, prize['itemImage']))
 
                 # Benefits
                 if 'benefits' in item:
@@ -80,7 +82,9 @@ class WebKuji(Website):
                             if 'itemImage' not in benefit_var:
                                 continue
                             image_name = benefit_var['itemImage'].split('/')[-1]
-                            images.append((image_name, benefit_var['itemImage']))
+                            if image_name.endswith('.jpg') or image_name.endswith('.jpeg') \
+                                    or image_name.endswith('.png') or image_name.endswith('.webp'):
+                                images.append((image_name, benefit_var['itemImage']))
 
                 # Last Prize
                 if 'prizeStoryImages' in item:
@@ -90,7 +94,8 @@ class WebKuji(Website):
                             continue
                         image_url = prize_story['image']
                         image_ext = image_url.split('.')[-1]
-                        images.append((f'prizestory{i + 1}.{image_ext}', image_url))
+                        if image_ext in ['jpg', 'jpeg', 'png', 'webp']:
+                            images.append((f'prizestory{i + 1}.{image_ext}', image_url))
                 for image in images:
                     image_url = image[1]
                     image_name = image[0]
